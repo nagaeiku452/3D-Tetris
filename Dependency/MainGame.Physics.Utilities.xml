@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MainGame.Physics.Utilities</name>
+    </assembly>
+    <members>
+        <member name="P:MainGame.Physics.Utilities.DirectedGraph`2.Item(`0,`0)">
+            <summary>
+            get the connection info from <paramref name="v1"/> to <paramref name="v2"/>.
+            </summary>
+            <param name="v1"></param>
+            <param name="v2"></param>
+            <returns>the edge info.</returns>
+        </member>
+        <member name="M:MainGame.Physics.Utilities.InstancePrototypeContainer`1.SearchInstance(System.Predicate{`0},`0@)">
+            <summary>
+            Search for instance.
+            </summary>
+            <param name="predicate">check for</param>
+            <returns>return first item found in rend instances,default if not found.</returns>
+        </member>
+    </members>
+</doc>

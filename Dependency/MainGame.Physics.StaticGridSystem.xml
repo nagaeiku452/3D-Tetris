@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MainGame.Physics.StaticGridSystem</name>
+    </assembly>
+    <members>
+        <member name="P:MainGame.Physics.StaticGridSystem.AllCollisionResult`1.ResultBuffer">
+            <summary>
+            the result buffer.
+            </summary>
+        </member>
+        <member name="P:MainGame.Physics.StaticGridSystem.AllCollisionResult`1.ContactDirection">
+            <summary>
+            Set the contact direction.
+            </summary>
+            <remarks>Will perform collision-only result if <seealso cref="P:MainGame.Physics.StaticGridSystem.AllCollisionResult`1.ContactDirection"/> is <seealso cref="F:MainGame.Physics.StaticGridSystem.StaticGridDirection.NoDirection"/>.</remarks>
+        </member>
+        <member name="P:MainGame.Physics.StaticGridSystem.BodyOnlyCollisionResult`1.ResultBuffer">
+            <summary>
+            the result buffer.
+            </summary>
+        </member>
+        <member name="P:MainGame.Physics.StaticGridSystem.BodyOnlyCollisionResult`1.ContactDirection">
+            <summary>
+            Set the contact direction.
+            </summary>
+            <remarks>Will perform collision-only result if <seealso cref="P:MainGame.Physics.StaticGridSystem.BodyOnlyCollisionResult`1.ContactDirection"/> is <seealso cref="F:MainGame.Physics.StaticGridSystem.StaticGridDirection.NoDirection"/>.</remarks>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:MainGame.Physics.StaticGridSystem.DefaultCollisionFilterHandler`1" -->
+        <member name="M:MainGame.Physics.StaticGridSystem.GridBoxCollection`1.Add(`0)">
+            <summary>
+            Add an element in this collection
+            </summary>
+            <param name="item">item to be added.</param>
+            <remarks>nothing happened if <paramref name="item"/> is null.</remarks>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.GridBoxCollection`1.GetItem(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get objects which collide the specific area.
+            </summary>
+            <param name="xMin"></param>
+            <param name="xMax"></param>
+            <param name="yMin"></param>
+            <param name="yMax"></param>
+            <param name="zMin"></param>
+            <param name="zMax"></param>
+            <returns>An Enumerator of T's which collide this area. </returns>
+        </member>
+        <member name="T:MainGame.Physics.StaticGridSystem.ICollisionFilterHandler`1">
+            <summary>
+            An Interface Handle Collision whether two <seealso cref="!:T"/> can collide each other or not.
+            </summary>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.ICollisionFilterHandler`1.NeedCollision(`0,`0)">
+            <summary>
+            Determine whether two object should collide each other or not.
+            </summary>
+            <param name="left">object 1.</param>
+            <param name="right">object 2.</param>
+            <returns>true if these two <seealso cref="!:T"/> should collide each other. Otherwise, false.</returns>
+        </member>
+        <member name="T:MainGame.Physics.StaticGridSystem.ICollisionPairResult">
+            <summary>
+            this callback is used to report whether a pair of <seealso cref="T:MainGame.Physics.StaticGridSystem.ShapeWrapper"/> collide each other or not
+            </summary>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.ICollisionPairResult.AddSingleResult(MainGame.Physics.StaticGridSystem.ShapeWrapper,MainGame.Physics.StaticGridSystem.ShapeWrapper,MainGame.Physics.StaticGridSystem.CollisionResultType,MainGame.Physics.StaticGridSystem.StaticGridDirection)">
+            <summary>
+            the function called by <seealso cref="T:MainGame.Physics.StaticGridSystem.StaticGridCollisionDispatcher"/> to report collision result.
+            Every <seealso cref="T:MainGame.Physics.StaticGridSystem.SimpleGridCollisionShape"/>'s collision will be reported once.
+            </summary>
+            <param name="obj1"></param>
+            <param name="obj2"></param>
+            <param name="collisionResult">the result type of this collision.</param>
+            <param name="contactDirection">the contact direction from <paramref name="obj1"/> to <paramref name="obj2"/>. Will be <seealso cref="F:MainGame.Physics.StaticGridSystem.StaticGridDirection.NoDirection"/> if <paramref name="collisionResult"/> is <seealso cref="F:MainGame.Physics.StaticGridSystem.CollisionResultType.HasCollision"/> or <seealso cref="F:MainGame.Physics.StaticGridSystem.CollisionResultType.NoContact"/>.</param>
+        </member>
+        <member name="T:MainGame.Physics.StaticGridSystem.IShapeCastResult`1">
+            <summary>
+            this class is used to reported whether a specific <seealso cref="!:T"/> hit other object or not.
+            </summary>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.IShapeCastResult`1.AddSingleResult(`0,MainGame.Physics.StaticGridSystem.ShapeWrapper)">
+            <summary>
+            Whenever any collision happened,this function will be called by engine to report result.
+            Each <seealso cref="!:T"/> collsion will call this function once.
+            </summary>
+            <param name="other">the other object that the shape collide.</param>
+            <param name="shape">the other object's shape that the shape collide.</param>
+        </member>
+        <member name="T:MainGame.Physics.StaticGridSystem.IShapeSweepResult`1">
+            <summary>
+            this interface is used to save the ShapeSweepTest's result.
+            </summary>
+            <typeparam name="T">Type of collision object.</typeparam>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.IShapeSweepResult`1.AddSingleResult(`0,System.Int32)">
+            <summary>
+            used by the test to report result.
+            this function is called for every <paramref name="otherObject"/>.
+            </summary>
+            <param name="otherObject">other object which is swept.</param>
+            <param name="maximumPossibleTransform">maximum possible transform to not sweep through <paramref name="otherObject"/>.</param>
+        </member>
+        <member name="T:MainGame.Physics.StaticGridSystem.IStaticGridPhysicsConfiguration`1">
+            <summary>
+            Custom physics feedback for custom rigidbodies
+            </summary>
+            <typeparam name="T">type of custom rigidbodies.</typeparam>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.IStaticGridPhysicsConfiguration`1.PhysicsCallback(MainGame.Physics.StaticGridSystem.StaticGridDynamicWorld{`0},System.Collections.Generic.IReadOnlyDictionary{`0,MainGame.Numeric.Vector3i},MainGame.Physics.StaticGridSystem.StaticGridDirection,MainGame.Physics.StaticGridSystem.IPhysicsCallbackResult{`0})">
+            <summary>
+            Custom PhysicsCallback
+            </summary>
+            <param name="world">The world where bodies lie in.</param>
+            <param name="bodies">The bodies which start the movement.</param>
+            <param name="transform">The body's movement.</param>
+            <param name="direction">If collision occurs, the push direction.</param>
+            <param name="result">Physics callback result. You should store your result here.</param>
+            <remarks>you should check the bodies' activation state for later use. The world itself will only intergrate gravity on those bodies which is active.</remarks>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.StaticGridCollisionObject.SetActivationState(MainGame.Physics.StaticGridSystem.GridBodyActivationState)">
+            <summary>
+            set a new state of this object.
+            </summary>
+            <param name="newState">new state to be set.</param>
+            <remarks>if <see cref="P:MainGame.Physics.StaticGridSystem.StaticGridCollisionObject.ActivationState"/> is <see cref="F:MainGame.Physics.StaticGridSystem.GridBodyActivationState.DisableDeactivation"/> or <see cref="F:MainGame.Physics.StaticGridSystem.GridBodyActivationState.DisableSimulation"/>, nothing happened. you should use <see cref="M:MainGame.Physics.StaticGridSystem.StaticGridCollisionObject.ForceSetActivationState(MainGame.Physics.StaticGridSystem.GridBodyActivationState)"/> instead.</remarks>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.StaticGridCollisionObject.ForceSetActivationState(MainGame.Physics.StaticGridSystem.GridBodyActivationState)">
+            <summary>
+            Force set a new state, no restriction.
+            </summary>
+            <param name="newState">>new state to be set.</param>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.StaticGridCollisionWorld`1.ShapeCastTest(MainGame.Physics.StaticGridSystem.GridCollisionShape,MainGame.Numeric.Vector3i,MainGame.Physics.StaticGridSystem.IShapeCastResult{`0},MainGame.Physics.StaticGridSystem.GridCollisionFlags)">
+            <summary>
+            Cast a shape to see if any object in this world collide with it.
+            </summary>
+            <param name="shape">shape to be cast</param>
+            <param name="worldTransform">transform where shape located.</param>
+            <param name="result">test result to be saved</param>
+            <param name="collisionFilterMask">preset filter of any other object.</param>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.StaticGridCollisionWorld`1.ShapeSweepTest(MainGame.Physics.StaticGridSystem.GridCollisionShape,MainGame.Numeric.Vector3i,MainGame.Physics.StaticGridSystem.StaticGridDirection,System.Int32,MainGame.Physics.StaticGridSystem.IShapeSweepResult{`0},MainGame.Physics.StaticGridSystem.GridCollisionFlags)">
+            <summary>
+            
+            </summary>
+            <param name="shape">shape to be swept.</param>
+            <param name="sweepDirection">sweep direction</param>
+            <param name="sweepLength"></param>
+            <param name="result">test result to be saved</param>
+            <param name="collisionFilterMask">preset filter of any other object</param>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.StaticGridCollisionWorld`1.HasContactResponse(`0,`0)">
+            <summary>
+            determine if two objects has contact response
+            </summary>
+            <param name="left">object 1</param>
+            <param name="right">object 2</param>
+            <returns>true if yes, otherwise false.</returns>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.StaticGridCollisionWorld`1.AddCollisionObject(`0)">
+            <summary>
+            Add a <seealso cref="!:T"/> in this world.
+            nothing happened if <paramref name="collisionObject"/> is null.
+            </summary>
+            <param name="collisionObject">the <seealso cref="!:T"/> to be add.</param>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.StaticGridCollisionWorld`1.RemoveCollisionObject(`0)">
+            <summary>
+            Remove a <seealso cref="!:T"/> in this world.
+            </summary>
+            <param name="collisionObject">the <seealso cref="!:T"/> to be add.</param>
+            <returns>true if <paramref name="collisionObject"/> is successfully removed, otherwise, false. </returns>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.StaticGridCollisionWorld`1.ClearWorld">
+            <summary>
+            Remove all <seealso cref="!:T"/> in this world.
+            </summary>
+        </member>
+        <member name="M:MainGame.Physics.StaticGridSystem.StaticGridCollisionWorld`1.UpdateAabbs">
+            <summary>
+            Update object's Aabbs
+            </summary>
+        </member>
+    </members>
+</doc>

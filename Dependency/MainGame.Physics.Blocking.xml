@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MainGame.Physics.Blocking</name>
+    </assembly>
+    <members>
+        <member name="T:MainGame.Physics.Blocking.BlockingBodyPendingMovement">
+            <summary>
+            this struct refers to any <seealso cref="T:MainGame.Physics.Blocking.BlockingRigidBody"/>'s pending movement.
+            
+            </summary>
+        </member>
+        <member name="F:MainGame.Physics.Blocking.BlockingBodyPendingMovement.offsetTransform">
+            <remarks>
+            This field must be <seealso cref="P:MainGame.Numeric.Vector3i.Zero"/> if <seealso cref="F:MainGame.Physics.Blocking.BlockingBodyPendingMovement.Status"/> is <seealso cref="F:MainGame.Physics.Blocking.BlockingBodyPendingMovementStatus.GravityLinked"/>.
+            In other word, it's meaningless in this type of declaration.
+            </remarks>
+        </member>
+        <member name="T:MainGame.Physics.Blocking.BlockingConnection">
+            <summary>
+            a struct to describe a relation between any two BlockingRigidBody.  
+            </summary>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.BlockingConnection.CheckBlockingStatus(MainGame.Physics.Blocking.BlockingDirection)">
+            <summary>
+            Check if the object is blocking with respect to input direction.
+            </summary>
+            <param name="incomingDirection">the pushing object moving direction.</param>
+            <returns>true if object is not blocked, false otherwise.</returns>
+        </member>
+        <member name="P:MainGame.Physics.Blocking.BlockingConnectionStatusInfo`1.PushingBody">
+            <summary>
+            The pushing body. 
+            </summary>
+        </member>
+        <member name="P:MainGame.Physics.Blocking.BlockingConnectionStatusInfo`1.BlockingBody">
+            <summary>
+            The blocking body. 
+            </summary>
+        </member>
+        <member name="P:MainGame.Physics.Blocking.BlockingConnectionStatusInfo`1.Direction">
+            <summary>
+            the main direction of this info.
+            </summary>
+        </member>
+        <member name="P:MainGame.Physics.Blocking.BlockingConnectionStatusInfo`1.ChangedDirection">
+            <summary>
+            the changed direction,if the main direction is blocked. 
+            </summary>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.BlockingDirection.GetReducedDirection(MainGame.Physics.StaticGridSystem.StaticGridDirection)">
+            <summary>
+            Intentional purpose only.
+            </summary>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.BlockingDirection.ContainElementalSubDirection(MainGame.Physics.StaticGridSystem.StaticGridDirection)">
+            <summary>
+            Intentional purpose only.
+            </summary>
+        </member>
+        <member name="T:MainGame.Physics.Blocking.BlockingGraph`1">
+            <summary>
+            this class is responsible for maintain graph data.
+            </summary>
+            <typeparam name="TVertex">type of rigid body.</typeparam>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.BlockingGraph`1.UpdateGraph(`0,MainGame.Physics.Blocking.BlockingDirection,System.Collections.Generic.ICollection{`0},System.Collections.Generic.ICollection{`0})">
+            <summary>
+            Update connection info.
+            </summary>
+            <param name="pushingBody"></param>
+            <param name="pushDirection"></param>
+            <param name="oldBodies"></param>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.BlockingGraph`1.ResetGraph(MainGame.Physics.StaticGridSystem.StaticGridDynamicWorld{`0},MainGame.Physics.StaticGridSystem.StaticGridDirection)">
+            <summary>
+            Reset the graph.
+            </summary>
+            <param name="newWorld">Reset with new world.</param>
+            <param name="mainDirection">Reset with new main StaticGridDirection.</param>
+            <remarks>Using default value means to reset without changing of parameters.</remarks>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.BlockingGraph`1.CheckBlockingStatus(`0,`0,MainGame.Physics.Blocking.BlockingDirection)">
+            <summary>
+            Check if the object is blocking with respect to input direction.
+            </summary>
+            <returns>true if object is not blocked, false otherwise.</returns>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.BlockingGraphBuilder`1.IsAllBlocked(System.Collections.Generic.IReadOnlyDictionary{`0,MainGame.Physics.Blocking.BlockingBodyPendingMovement},System.Collections.Generic.ICollection{`0})">
+            <summary>
+            check if <paramref name="bodySet"/> is all blocked.
+            </summary>
+            <param name="bodyPendingMovementSet"></param>
+            <param name="bodySet"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.BlockingGraphBuilder`1.SetBlockingBodyStatusToImmovable(`0,System.Collections.Generic.IDictionary{`0,MainGame.Physics.Blocking.BlockingBodyPendingMovement},MainGame.Physics.Blocking.BlockingGraph{`0},System.Collections.Generic.ICollection{`0})">
+            <summary>
+            Change <paramref name="immovableBody"/>'s status to immovable
+            </summary>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.BlockingGraphBuilder`1.DetectUnpushedBodies(System.Collections.Generic.ICollection{`0},System.Collections.Generic.IDictionary{`0,MainGame.Physics.Blocking.BlockingBodyPendingMovement},MainGame.Physics.Blocking.BlockingGraph{`0})">
+            <summary>
+            Detect unpushed bodies and change their status from pending movement
+            </summary>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.DoubleSignSymbolDataBuffer`1.GetRowData(MainGame.Numeric.SignSymbol)">
+            <summary>
+            Get the datas represent by first index
+            </summary>
+            <returns>Datas represent by first index</returns>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.DoubleSignSymbolDataBuffer`1.GetColumnData(MainGame.Numeric.SignSymbol)">
+            <summary>
+            Get the datas represent by second index
+            </summary>
+            <returns>Datas represent by second index</returns>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.DoubleSignSymbolDataBuffer`1.GetTransposeData">
+            <summary>
+            Get the transposed data
+            </summary>
+            <returns>the transposed data</returns>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.GravityLinkGraph`1.CreateJackedUpLink(`0,`0)">
+            <summary>
+            Create jacked-up gravity link.
+            </summary>
+            <param name="downBody"></param>
+            <param name="upBody"></param>
+            <remarks>will do nothing if <paramref name="downBody"/> or <paramref name="upBody"/> is not in this graph.</remarks>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.GravityLinkGraphBuilder`1.CheckBlockingStatus(`0,MainGame.Physics.Blocking.BlockingGraph{`0},System.Collections.Generic.IReadOnlyDictionary{`0,MainGame.Physics.Blocking.BlockingBodyPendingMovement},System.Collections.Generic.IReadOnlyDictionary{`0,MainGame.Physics.Blocking.BlockingBodyPendingMovement},MainGame.Physics.Blocking.BlockingBodyPendingMovement)">
+            <summary>
+            
+            </summary>
+            <param name="body"></param>
+            <param name="blockingGraph"></param>
+            <param name="gravityLinkedBodiesPendingMovementBuffer"></param>
+            <param name="movement"></param>
+            <returns>true if not blocked, false otherwise.</returns>
+        </member>
+        <member name="M:MainGame.Physics.Blocking.IGravityLinkConfiguration`1.CheckGravityLink(`0,`0)">
+            <summary>
+            Check these two objects should have gravityLink or not.
+            </summary>
+            <param name="up">up body</param>
+            <param name="down">down body</param>
+            <returns>True if contact as above and below objects, then should create gravity link between them. Otherwise, false</returns>
+        </member>
+    </members>
+</doc>

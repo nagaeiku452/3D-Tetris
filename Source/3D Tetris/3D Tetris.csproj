@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>_3D_Tetris</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <LangVersion>9.0</LangVersion>
+    <ApplicationIcon />
+    <StartupObject>_3D_Tetris.Program</StartupObject>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>true</Optimize>
+    <PublishTrimmed>true</PublishTrimmed>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="MainGame.Physics.Blocking">
+      <HintPath>..\..\Dependency\MainGame.Physics.Blocking.dll</HintPath>
+    </Reference>
+    <Reference Include="MainGame.Physics.StaticGridSystem">
+      <HintPath>..\..\Dependency\MainGame.Physics.StaticGridSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="MainGame.Physics.Utilities">
+      <HintPath>..\..\Dependency\MainGame.Physics.Utilities.dll</HintPath>
+    </Reference>
+    <Reference Include="MainGame.Numeric">
+      <HintPath>..\..\Dependency\MainGame.Numeric.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
