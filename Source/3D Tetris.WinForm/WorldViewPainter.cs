@@ -1,18 +1,12 @@
 ﻿using MainGame.Numeric;
 using MainGame.Physics.StaticGridSystem;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace _3D_Tetris
+namespace _3D_Tetris.WinForm
 {
     internal class WorldViewPainter : IDisposable
     {
         private readonly WorldObjectPainter objectPainter;
-        private readonly GroundPainter groundPainter;
+        private readonly GroundPainter? groundPainter;
         private readonly WorldViewBoxShader shader = new();
 
         //public Size WorldViewSize
@@ -31,7 +25,7 @@ namespace _3D_Tetris
             }
         }
 
-        public WorldViewPainter(Vector3i viewBoxMin, Vector3i viewBoxMax, BWBoxSprite boxSprite, GroundPainter groundPainter)
+        public WorldViewPainter(Vector3i viewBoxMin, Vector3i viewBoxMax, BWBoxSprite boxSprite, GroundPainter? groundPainter)
         {
             objectPainter = new WorldObjectPainter(boxSprite, new WorldViewBox(viewBoxMin, viewBoxMax));
             this.groundPainter = groundPainter;
@@ -63,7 +57,7 @@ namespace _3D_Tetris
         public void Dispose()
         {
             ((IDisposable)objectPainter).Dispose();
-            ((IDisposable)groundPainter)?.Dispose();
+            groundPainter?.Dispose();
         }
     }
 }

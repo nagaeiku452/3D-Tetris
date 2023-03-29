@@ -1,6 +1,6 @@
 ﻿namespace _3D_Tetris
 {
-    internal enum CameraViewAngle
+    public enum CameraViewAngle
     {
         firstQuadrant,
         secondQuadrant,

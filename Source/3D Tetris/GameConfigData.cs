@@ -3,10 +3,11 @@ using System.IO;
 using System.Text;
 using System.Reflection;
 using System.Globalization;
+using _3D_Tetris.Drawing;
 
 namespace _3D_Tetris
 {
-    internal static class GameConfigData
+    public static class GameConfigData
     {
         private static int gameLoopInterval = 15;// in millisecond
         private static int renderInterval = 15;// in millisecond
@@ -96,6 +97,8 @@ namespace _3D_Tetris
         public static byte BackgroundColorR { get; private set; } = 0x22;
         public static byte BackgroundColorG { get; private set; } = 0x22;
         public static byte BackgroundColorB { get; private set; } = 0x22;
+
+        public static Color BackgroundColor => Color.FromRgb(BackgroundColorR, BackgroundColorG, BackgroundColorB);
 
         public static int WorldTetrisUnitZSurfaceHeight
         {
@@ -251,6 +254,15 @@ namespace _3D_Tetris
                 }
             }
         }
+
+
+        public static byte CurrentTetrisShadowColorA { get; private set; } = 127;
+        public static byte CurrentTetrisShadowColorR { get; private set; } = 0;
+        public static byte CurrentTetrisShadowColorG { get; private set; } = 0;
+        public static byte CurrentTetrisShadowColorB { get; private set; } = 0;
+
+
+
         private static string ConfigPath { get; } = "./config";
 
         static GameConfigData()
@@ -283,10 +295,7 @@ namespace _3D_Tetris
             {
                 Type configDataType = typeof(GameConfigData);
                 PropertyInfo property = configDataType.GetProperty(argName);
-                if(property is not null)
-                {
-                    property.SetValue(null, Convert.ChangeType(argValue, property.PropertyType, CultureInfo.InvariantCulture));
-                }
+                property?.SetValue(null, Convert.ChangeType(argValue, property.PropertyType, CultureInfo.InvariantCulture));
             }
             catch
             {

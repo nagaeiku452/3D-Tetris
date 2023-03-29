@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>_3D_Tetris</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <LangVersion>9.0</LangVersion>
-    <ApplicationIcon />
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>_3D_Tetris.WinForm</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>x64</Platforms>
+    <StartupObject>_3D_Tetris.WinForm.Program</StartupObject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -15,6 +17,10 @@
     <Optimize>true</Optimize>
     <PublishTrimmed>true</PublishTrimmed>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\3D Tetris\3D Tetris.csproj"/>
+  </ItemGroup>
 
   <ItemGroup>
     <Reference Include="MainGame.Physics.Blocking">

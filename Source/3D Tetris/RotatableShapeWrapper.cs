@@ -1,11 +1,6 @@
 ﻿using MainGame.Numeric;
 using MainGame.Physics.StaticGridSystem;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _3D_Tetris
 {
@@ -94,7 +89,7 @@ namespace _3D_Tetris
         //    shapePos = statusData.ShapePosition;
         //}
 
-        private struct SingleShapeInitialStatusData
+        private readonly struct SingleShapeInitialStatusData
         {
             public SingleShapeInitialStatusData(Vector3i shapePosition, Vector3i aabbMin, Vector3i aabbMax, ComposedStaticGridDirection inclineDirection)
             {

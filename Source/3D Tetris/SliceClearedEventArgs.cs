@@ -1,12 +1,7 @@
 ﻿namespace _3D_Tetris
 {
-    internal struct SliceClearedEventArgs
+    internal class SliceClearedEventArgs
     {
-        public readonly int SliceCleared;
-
-        public SliceClearedEventArgs(int sliceCleared)
-        {
-            SliceCleared = sliceCleared;
-        }
+        public int SliceCleared { get; internal set; }
     }
 }

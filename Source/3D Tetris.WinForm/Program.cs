@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace _3D_Tetris
+﻿namespace _3D_Tetris.WinForm
 {
     public class Program
     {

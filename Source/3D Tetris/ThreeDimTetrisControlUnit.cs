@@ -1,36 +1,18 @@
-﻿using MainGame.Numeric;
-using MainGame.Physics.Blocking;
+﻿using _3D_Tetris.Drawing;
+using MainGame.Numeric;
 using MainGame.Physics.StaticGridSystem;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+//using System.Drawing;
 
 namespace _3D_Tetris
 {
-    internal class ThreeDimTetrisControlUnit : WinFormControlUnit, IDisposable
+    public class ThreeDimTetrisControlUnit : IDisposable
     {
-        private MainWindow mainWindow;
-        private Image frontImage;
-        private Image backImage;
-        private WorldViewPainter worldViewPainter;
 
-        private SingleTetrisPainter nextSingleTetrisPainter;
-        private SingleTetrisPainter heldSingleTetrisPainter;
-
-        private readonly Point[] nextTetrisPos = new Point[3];
-
-        //private readonly MultiBoxShapeReplicator holdShapeReplicator = new();
-        //private readonly MultiBoxShapeReplicator tempShapeReplicator = new();
-        //private Color holdShapeColor = Color.AliceBlue;
+        private readonly TetrisMorphling currentTetris = new();
+        private readonly TotalTetrisDropCounter dropCounter = new();
         private readonly TetrisMorphling heldTetris = new();
-        private bool IsHeldTetris = false;
-
-
-        //TetrisBodyBase testTetris;
         private readonly ThreeDimTetrisField TetrisField = new();
         private readonly ThreeDimTetrisScoreCounter scoreCounter = new();
         private readonly ThreeDimTetrisSliceClearedCounter sliceCounter = new();
@@ -41,57 +23,29 @@ namespace _3D_Tetris
         {
             QueueSize = 3,
         };
-        private readonly ThreeDimTetrisUIManager uIManager = new();
 
+        public IEnumerable<(GridCollisionShape, Color)> NextTetrisData => generator.EnumerateNextTetrisData;
 
-        //int tetrisFallThreshold = GlobalPresetConst.TetrisFallInterval;
-        private CameraViewAngle curViewAngle = CameraViewAngle.firstQuadrant;
-        private readonly TetrisMorphling currentTetris = new();
+        public int CurrentScore => scoreCounter.CurrentScore;
+        public int CurrentClearedSlices => sliceCounter.TotalSliceCleared;
+        public int CurrentLevel => levelCounter.CurrentLevel;
+        public TimeSpan TotalPlayTime => playTimeCounter.TotalPlayTime;
+        public int TotalTetrisDropped => dropCounter.TotalTetrisDropped;
 
-        private readonly TotalTetrisDropCounter dropCounter = new();
+        public TetrisBodyBase CurrentTetris => currentTetris.Instance;
+        public TetrisBodyBase HeldTetris => heldTetris.Instance;
+
+        public StaticGridDynamicWorld<TetrisBodyBase> TetrisWorld => TetrisField.TetrisWorld;
+
+        public CameraViewAngle CurViewAngle { get; private set; } = CameraViewAngle.firstQuadrant;
+        public bool IsHeldTetris { get; private set; } = false;
         //int tetrisCount = 0;
 
-        private static readonly Color BackGroundColor = Color.FromArgb(GameConfigData.BackgroundColorR, GameConfigData.BackgroundColorG, GameConfigData.BackgroundColorB);
+        public static readonly Color BackGroundColor = Color.FromRgb(GameConfigData.BackgroundColorR, GameConfigData.BackgroundColorG, GameConfigData.BackgroundColorB);
 
-        public override void Dispose()
+        public ThreeDimTetrisControlUnit(Vector3i viewBoxMax)
         {
-            frontImage.Dispose();
-            backImage.Dispose();
-            worldViewPainter.Dispose();
-            TetrisField.SliceCleared -= OnSliceCleared;
-            TetrisField.CurrentTetrisHardDropped -= OnCurrentTetrisHardDropped;
-            TetrisField.CurrentTetrisFallToStack -= OnCurrentTetrisFallToStack;
-            fallTimer.TetrisFall -= OnCurrentTetrisFallIntervalTimeUp;
-        }
-
-        public override void InitControlUnit(MainWindow mainWindow)
-        {
-            this.mainWindow = mainWindow;
-            Vector3i viewBoxMax = new(GameConfigData.WorldLengthX - 1, GameConfigData.WorldLengthY - 1, GameConfigData.WorldLengthZ - 1);
             TetrisField.InitNewTetrisField(Vector3i.Zero, viewBoxMax);
-            GroundPainter gPainter = new();
-
-            gPainter.ConfigureProjection(new Point(GameConfigData.WorldTetrisUnitZSurfaceWidth / 2, GameConfigData.WorldTetrisUnitZSurfaceHeight / 2), new Point(-GameConfigData.WorldTetrisUnitZSurfaceWidth / 2, GameConfigData.WorldTetrisUnitZSurfaceHeight / 2), viewBoxMax.X + 1, viewBoxMax.Y + 1);
-            BWBoxSprite boxSprite1 = new();
-            boxSprite1.GenerateImage(GameConfigData.WorldTetrisUnitBoxHeight, GameConfigData.WorldTetrisUnitZSurfaceHeight, GameConfigData.WorldTetrisUnitZSurfaceWidth, GameConfigData.XSurfaceBrightness, GameConfigData.YSurfaceBrightness, GameConfigData.ZSurfaceBrightness);
-            worldViewPainter = new WorldViewPainter(Vector3i.Zero, viewBoxMax, boxSprite1, gPainter);
-
-            BWBoxSprite boxSprite2 = new();
-            boxSprite2.GenerateImage(GameConfigData.TetrisModelUnitBoxHeight, GameConfigData.TetrisModelUnitZSurfaceHeight, GameConfigData.TetrisModelUnitZSurfaceWidth, GameConfigData.XSurfaceBrightness, GameConfigData.YSurfaceBrightness, GameConfigData.ZSurfaceBrightness);
-            nextSingleTetrisPainter = new SingleTetrisPainter(boxSprite2);
-
-            BWBoxSprite boxSprite3 = new();
-            boxSprite3.GenerateImage(GameConfigData.HeldTetrisUnitBoxHeight, GameConfigData.HeldTetrisUnitZSurfaceHeight, GameConfigData.HeldTetrisUnitZSurfaceWidth, GameConfigData.XSurfaceBrightness, GameConfigData.YSurfaceBrightness, GameConfigData.ZSurfaceBrightness);
-            heldSingleTetrisPainter = new SingleTetrisPainter(boxSprite3);
-
-            backImage = new Bitmap(mainWindow.GameWindow.Size.Width, mainWindow.GameWindow.Size.Height);
-            frontImage = new Bitmap(mainWindow.GameWindow.Size.Width, mainWindow.GameWindow.Size.Height);
-
-            nextTetrisPos[0] = mainWindow.NextTetris1.Location;
-            nextTetrisPos[1] = mainWindow.NextTetris2.Location;
-            nextTetrisPos[2] = mainWindow.NextTetris3.Location;
-
-            uIManager.Initialize(mainWindow);
 
             scoreCounter.InitNewScore();
             TetrisField.SliceCleared += OnSliceCleared;
@@ -105,77 +59,74 @@ namespace _3D_Tetris
 
             playTimeCounter.InitTotalPlayTime();
 
-            GeneratrNewTetris(currentTetris, TetrisField, curViewAngle, generator, false);
+            GeneratrNewTetris(currentTetris, TetrisField, CurViewAngle, generator, false);
         }
 
-        public override void OnKeyDown(object sender, KeyEventArgs e)
+        void IDisposable.Dispose()
         {
-            if (e.KeyCode == Keys.Escape)
+            TetrisField.SliceCleared -= OnSliceCleared;
+            TetrisField.CurrentTetrisHardDropped -= OnCurrentTetrisHardDropped;
+            TetrisField.CurrentTetrisFallToStack -= OnCurrentTetrisFallToStack;
+            fallTimer.TetrisFall -= OnCurrentTetrisFallIntervalTimeUp;
+            GC.SuppressFinalize(this);
+        }
+
+        public void OnKeyDown(TetrisGameInstruction newKeyInstruction)
+        {
+            switch (newKeyInstruction)
             {
-                mainWindow.Close();
-            }
-            else if (e.KeyCode == Keys.Up)
-            {
-                TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, curViewAngle) * -Vector3i.UnitY);
-            }
-            else if (e.KeyCode == Keys.Down)
-            {
-                TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, curViewAngle) * Vector3i.UnitY);
-            }
-            else if (e.KeyCode == Keys.Left)
-            {
-                TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, curViewAngle) * -Vector3i.UnitX);
-            }
-            else if (e.KeyCode == Keys.Right)
-            {
-                TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, curViewAngle) * Vector3i.UnitX);
-            }
-            else if (e.KeyCode == Keys.Space)
-            {
-                TetrisField.CurrentTetrisHardDrop();
-            }
-            else if (e.KeyCode == Keys.Z)
-            {
-                TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.PositiveUnitX, curViewAngle));
-            }
-            else if (e.KeyCode == Keys.A)
-            {
-                TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.NegativeUnitX, curViewAngle));
-            }
-            else if (e.KeyCode == Keys.X)
-            {
-                TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.PositiveUnitY, curViewAngle));
-            }
-            else if (e.KeyCode == Keys.S)
-            {
-                TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.NegativeUnitY, curViewAngle));
-            }
-            else if (e.KeyCode == Keys.C)
-            {
-                TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.PositiveUnitZ, curViewAngle));
-            }
-            else if (e.KeyCode == Keys.D)
-            {
-                TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.NegativeUnitZ, curViewAngle));
-            }
-            else if (e.KeyCode == Keys.Q)
-            {
-                curViewAngle = curViewAngle.CounterClockWisedShift();
-            }
-            else if (e.KeyCode == Keys.E)
-            {
-                curViewAngle = curViewAngle.ClockWisedShift();
-            }
-            else if (e.KeyCode == Keys.NumPad0)
-            {
-                fallTimer.SoftDropEnabled = true;
-            }
-            else if (e.KeyCode == Keys.ShiftKey)
-            {
-                if (!IsHeldTetris)
-                {
-                    HoldTetris();
-                }
+                case TetrisGameInstruction.None:
+                    break;
+                case TetrisGameInstruction.MoveUpLeft:
+                    TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, CurViewAngle) * -Vector3i.UnitX);
+                    break;
+                case TetrisGameInstruction.MoveUpRight:
+                    TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, CurViewAngle) * -Vector3i.UnitY);
+                    break;
+                case TetrisGameInstruction.MoveDownLeft:
+                    TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, CurViewAngle) * Vector3i.UnitY);
+                    break;
+                case TetrisGameInstruction.MoveDownRight:
+                    TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, CurViewAngle) * Vector3i.UnitX);
+                    break;
+                case TetrisGameInstruction.PosXRotation:
+                    TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.PositiveUnitX, CurViewAngle));
+                    break;
+                case TetrisGameInstruction.PosYRotation:
+                    TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.PositiveUnitY, CurViewAngle));
+                    break;
+                case TetrisGameInstruction.PosZRotation:
+                    TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.PositiveUnitZ, CurViewAngle));
+                    break;
+                case TetrisGameInstruction.NegXRotation:
+                    TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.NegativeUnitX, CurViewAngle));
+                    break;
+                case TetrisGameInstruction.NegYRotation:
+                    TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.NegativeUnitY, CurViewAngle));
+                    break;
+                case TetrisGameInstruction.NegZRotation:
+                    TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.NegativeUnitZ, CurViewAngle));
+                    break;
+                case TetrisGameInstruction.ClockWiseCameraRotate:
+                    CurViewAngle = CurViewAngle.ClockWisedShift();
+                    break;
+                case TetrisGameInstruction.CounterClockWiseCameraRotate:
+                    CurViewAngle = CurViewAngle.CounterClockWisedShift();
+                    break;
+                case TetrisGameInstruction.SoftDrop:
+                    fallTimer.SoftDropEnabled = true;
+                    break;
+                case TetrisGameInstruction.HardDrop:
+                    TetrisField.CurrentTetrisHardDrop();
+                    break;
+                case TetrisGameInstruction.Hold:
+                    if (!IsHeldTetris)
+                    {
+                        HoldTetris();
+                    }
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -188,18 +139,18 @@ namespace _3D_Tetris
 
             if (heldTetrisNum == -1)
             {
-                GeneratrNewTetris(currentTetris, TetrisField, curViewAngle, generator, true);
+                GeneratrNewTetris(currentTetris, TetrisField, CurViewAngle, generator, true);
             }
             else
             {
                 currentTetris.CloneTetrisData(generator.GetTetrisData(heldTetrisNum), heldTetrisNum);
-                AddNewTetris(currentTetris, TetrisField, curViewAngle, true);
+                AddNewTetris(currentTetris, TetrisField, CurViewAngle, true);
             }
         }
 
-        public override void OnKeyUp(object sender, KeyEventArgs e)
+        public void OnKeyUp(TetrisGameInstruction newKeyInstruction)
         {
-            if (e.KeyCode == Keys.NumPad0)
+            if (newKeyInstruction == TetrisGameInstruction.SoftDrop)
             {
                 fallTimer.SoftDropEnabled = false;
             }
@@ -239,53 +190,49 @@ namespace _3D_Tetris
         //    };
         //}
 
-        public override void OnRenderLoopEvent(object sender, EventArgs e)
+        //public void OnRenderLoopEvent()
+        //{
+
+        //    //clear background
+        //    Graphics g = Graphics.FromImage(backImage);
+        //    g.Clear(BackGroundColor);
+
+        //    //paint world
+        //    worldViewPainter.PaintWorld(TetrisField.TetrisWorld, backImage, mainWindow.WorldOrigin.Location, CurViewAngle);
+
+        //    //paint next tetrises
+        //    int i = 0;
+        //    foreach ((GridCollisionShape, Color) item in generator.EnumerateNextTetrisData)
+        //    {
+        //        if (i < 3)
+        //        {
+        //            PaintSingleTetris(nextSingleTetrisPainter, backImage, nextTetrisPos[i], item.Item1, item.Item2, false);
+        //        }
+        //        i++;
+        //    }
+
+        //    //paint hold tetris
+
+        //    PaintSingleTetris(heldSingleTetrisPainter, backImage, mainWindow.HoldTetris.Location, heldTetris.Instance.GridCollisionShape, heldTetris.Instance.PaintColor, IsHeldTetris1);
+
+        //    //switch
+        //    (backImage, frontImage) = (frontImage, backImage);
+        //    mainWindow.GameWindow.BackgroundImage = frontImage;
+
+        //    ShowUIData();
+
+        //    mainWindow.Log.Text = $"{dropCounter.TotalTetrisDropped / playTimeCounter.TotalPlayTime.TotalSeconds:F2}";
+        //}
+
+        //private static void PaintSingleTetris(SingleTetrisPainter bigSingleTetrisPainter, Image backImage, Point anchor, GridCollisionShape shape, Color color, bool IsHeld)
+        //{
+        //    bigSingleTetrisPainter.PaintSingleTetris(backImage, anchor, shape, color, IsHeld);
+        //}
+
+        public void OnGameLoopEvent(int millisecondPassed)
         {
-            base.OnRenderLoopEvent(sender, e);
-
-            //clear background
-            Graphics g = Graphics.FromImage(backImage);
-            g.Clear(BackGroundColor);
-
-            //paint world
-            worldViewPainter.PaintWorld(TetrisField.TetrisWorld, backImage, mainWindow.WorldOrigin.Location, curViewAngle);
-
-            //paint next tetrises
-            int i = 0;
-            foreach ((GridCollisionShape, Color) item in generator.EnumerateNextTetrisData)
-            {
-                if (i < 3)
-                {
-                    PaintSingleTetris(nextSingleTetrisPainter, backImage, nextTetrisPos[i], item.Item1, item.Item2, false);
-                }
-                i++;
-            }
-
-            //paint hold tetris
-
-            PaintSingleTetris(heldSingleTetrisPainter, backImage, mainWindow.HoldTetris.Location, heldTetris.Instance.GridCollisionShape, heldTetris.Instance.PaintColor, IsHeldTetris);
-
-            //switch
-            Image temp = frontImage;
-            frontImage = backImage;
-            backImage = temp;
-            mainWindow.GameWindow.BackgroundImage = frontImage;
-
-            ShowUIData();
-
-            mainWindow.Log.Text = $"{((dropCounter.TotalTetrisDropped) / playTimeCounter.TotalPlayTime.TotalSeconds):F2}";
-        }
-
-        private static void PaintSingleTetris(SingleTetrisPainter bigSingleTetrisPainter, Image backImage, Point anchor, GridCollisionShape shape, Color color, bool IsHeld)
-        {
-            bigSingleTetrisPainter.PaintSingleTetris(backImage, anchor, shape, color, IsHeld);
-        }
-
-        public override void OnGameLoopEvent(object sender, EventArgs e)
-        {
-            base.OnGameLoopEvent(sender, e);
             fallTimer.Tick();
-            playTimeCounter.AddPlayTime(GameConfigData.GameLoopInterval);
+            playTimeCounter.AddPlayTime(millisecondPassed);
         }
 
         //private void PaintWorld(StaticGridDynamicWorld<TetrisBodyBase> world, Image canvas, CameraViewAngle curViewAngle)
@@ -315,7 +262,7 @@ namespace _3D_Tetris
         private void OnCurrentTetrisFallToStack(object sender, EventArgs _)
         {
             fallTimer.ResetFallInterval(levelCounter.CurrentLevel);
-            GeneratrNewTetris(currentTetris, TetrisField, curViewAngle, generator, false);
+            GeneratrNewTetris(currentTetris, TetrisField, CurViewAngle, generator, false);
 
             dropCounter.Dropped();
         }
@@ -356,7 +303,7 @@ namespace _3D_Tetris
 
         private static StaticGridRotation GetRotationByViewAngle(CameraViewAngle startViewAngle, CameraViewAngle endViewAngle)
         {
-            return (GetRotationByViewAngle(startViewAngle) ^ (-1)) * GetRotationByViewAngle(endViewAngle);
+            return (GetRotationByViewAngle(startViewAngle) ^ -1) * GetRotationByViewAngle(endViewAngle);
         }
 
         private void OnCurrentTetrisFallIntervalTimeUp(object sender, FallEventArgs fe)
@@ -366,15 +313,6 @@ namespace _3D_Tetris
             {
                 scoreCounter.OnCurrentTetrisSoftDropped(levelCounter.CurrentLevel);
             }
-        }
-
-        private void ShowUIData()
-        {
-            uIManager.ShowScore(scoreCounter.CurrentScore);
-            uIManager.ShowSliceCleared(sliceCounter.TotalSliceCleared);
-            uIManager.ShowLevel(levelCounter.CurrentLevel);
-            uIManager.ShowPlayTime(playTimeCounter.TotalPlayTime);
-            uIManager.ShowTetrisDropped(dropCounter.TotalTetrisDropped);
         }
 
         private void AdjustCurrentLevel(int totalSliceCleared)

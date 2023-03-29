@@ -1,19 +1,16 @@
-﻿using MainGame.Numeric;
+﻿using _3D_Tetris.Drawing;
+using MainGame.Numeric;
 using MainGame.Physics.Blocking;
 using MainGame.Physics.StaticGridSystem;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace _3D_Tetris
+namespace _3D_Tetris.WinForm
 {
     internal class SingleTetrisPainter
     {
         private readonly StaticGridDynamicWorld<TetrisBodyBase> singleTetrisWorld = new(new StaticGridCollisionDispatcher(new DefaultStaticGridCollisionAlgorithmConfiguration()), new BlockingPhysicsConfiguration<TetrisBodyBase>());
-        private readonly RotatableTetris singleTetrisModel = new();
+        private readonly TetrisBodyBase singleTetrisModel = new(StaticGridRigidBodyType.Static);
         private readonly WorldObjectPainter objectPainter;
         private readonly SingleModelBoxShader shader = new();
 
@@ -22,7 +19,7 @@ namespace _3D_Tetris
             objectPainter = new WorldObjectPainter(boxSprite, new WorldViewBox(Vector3i.Zero, Vector3i.Zero));
         }
 
-        internal void PaintSingleTetris(Image backImage, Point anchor, GridCollisionShape shape, Color color, bool IsHeld = false)
+        internal void PaintSingleTetris(Image? backImage, System.Drawing.Point anchor, GridCollisionShape shape, System.Drawing.Color color, bool IsHeld = false)
         {
             singleTetrisModel.GridCollisionShape = shape;
             singleTetrisModel.PaintColor = color;

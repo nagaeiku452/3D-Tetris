@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing.Imaging;
 
-namespace _3D_Tetris
+namespace _3D_Tetris.WinForm
 {
     internal static class ColorMatrixGenerator
     {

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace _3D_Tetris
+﻿
+namespace _3D_Tetris.WinForm
 {
     internal class SingleModelBoxShader : BoxShader
     {

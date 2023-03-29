@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace _3D_Tetris
+namespace _3D_Tetris.WinForm
 {
     internal class GroundPainter : IDisposable
     {
         private readonly SolidBrush edgeBrush;
         //private readonly Pen midPen;
         private readonly SolidBrush groundBrush;
-        private Image ground;
+        private Image? ground;
         private PointF groundOrigin;
 
         private Point unitXProjection;
@@ -45,14 +41,14 @@ namespace _3D_Tetris
 
         public void Dispose()
         {
-            ((IDisposable)edgeBrush).Dispose();
-            ((IDisposable)groundBrush).Dispose();
-            ((IDisposable)ground).Dispose();
+            edgeBrush.Dispose();
+            groundBrush.Dispose();
+            ground?.Dispose();
         }
 
-        public void PaintGround(Image canvas, Point anchor, bool doYAxisReflection)
+        public void PaintGround(Image? canvas, Point anchor, bool doYAxisReflection)
         {
-            if (canvas == null)
+            if (canvas == null || ground == null)
             {
                 return;
             }
@@ -75,7 +71,6 @@ namespace _3D_Tetris
         private bool GenerateUnitGround()
         {
             ground?.Dispose();
-            ground = null;
 
             if (xAxis < 1 || yAxis < 1 || unitXProjection == default || unitYProjection == default)
             {
@@ -83,8 +78,6 @@ namespace _3D_Tetris
             }
 
             float groundEdgeHeight = GameConfigData.GroundEdgeWidth;
-
-
 
             insidePoints[0] = new PointF();
             insidePoints[1] = (Point)(new Size(unitXProjection) * xAxis);

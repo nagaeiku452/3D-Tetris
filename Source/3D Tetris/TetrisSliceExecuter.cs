@@ -3,9 +3,6 @@ using MainGame.Physics.StaticGridSystem;
 using MainGame.Physics.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _3D_Tetris
 {
@@ -15,6 +12,7 @@ namespace _3D_Tetris
         private readonly GridBoxCollisionShape destroySliceSweepShape = new(new(), new());
         private readonly AllShapeCastResult<TetrisBodyBase> allShapeCastResult = new();
         private readonly Dictionary<TetrisBodyBase, Vector3i> sliceMovementBuffer = new();
+        private readonly SliceClearedEventArgs sliceClearedEventArg = new();
 
         private readonly GridBoxCollisionShape sliceSweepShape = new(new(), new());
         private readonly TFOnlyShapeCastResult<TetrisBodyBase> tFOnlyShapeCastResult = new();
@@ -68,7 +66,8 @@ namespace _3D_Tetris
             }
             if (filledSlicesHeight.Count > 0)
             {
-                SliceCleared?.Invoke(this, new SliceClearedEventArgs(filledSlicesHeight.Count));
+                sliceClearedEventArg.SliceCleared = filledSlicesHeight.Count;
+                SliceCleared?.Invoke(this, sliceClearedEventArg);
             }
         }
         private bool CheckFilled(StaticGridDynamicWorld<TetrisBodyBase> world, Vector3i min, Vector3i max)

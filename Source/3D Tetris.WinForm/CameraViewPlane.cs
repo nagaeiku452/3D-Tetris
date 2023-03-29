@@ -1,16 +1,11 @@
 ﻿using MainGame.Numeric;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace _3D_Tetris
+namespace _3D_Tetris.WinForm
 {
     internal class CameraViewPlane
     {
-
         private readonly PaintDataComparison comparison;
         private readonly List<(Vector3i, TetrisBodyBase)> paintDataBuffer;
         private readonly IDictionary<int, (Point, TetrisBodyBase)> paintData = new Dictionary<int, (Point, TetrisBodyBase)>();
@@ -23,7 +18,7 @@ namespace _3D_Tetris
             set => comparison.CurrentViewAngle = value;
         }
 
-        public CameraViewPlane()
+        internal CameraViewPlane()
         {
             comparison = new PaintDataComparison(CameraViewAngle.firstQuadrant);
             paintDataBuffer = new List<(Vector3i, TetrisBodyBase)>();
@@ -33,7 +28,7 @@ namespace _3D_Tetris
         {
             comparison.CurrentViewAngle = viewAngle;
 
-            Matrix3x3i rotationMatrix = CameraViewRotationMatrix.GenerateRotationMatrix(viewAngle);
+            Matrix3x3i rotationMatrix = viewAngle.GenerateRotationMatrix();
 
             paintDataBuffer.Clear();
             paintData.Clear();
@@ -92,10 +87,10 @@ namespace _3D_Tetris
             {
                 return CurrentViewAngle switch
                 {
-                    CameraViewAngle.firstQuadrant => ((x.Item1.X + x.Item1.Y + x.Item1.Z - (y.Item1.X + y.Item1.Y + y.Item1.Z)) * 3) - (x.Item2.IsShadow ? 1 : 0) + (y.Item2.IsShadow ? 1 : 0),
-                    CameraViewAngle.secondQuadrant => ((-x.Item1.X + x.Item1.Y + x.Item1.Z - (-y.Item1.X + y.Item1.Y + y.Item1.Z)) * 3) - (x.Item2.IsShadow ? 1 : 0) + (y.Item2.IsShadow ? 1 : 0),
-                    CameraViewAngle.thirdQuadrant => ((-x.Item1.X - x.Item1.Y + x.Item1.Z - (-y.Item1.X - y.Item1.Y + y.Item1.Z)) * 3) - (x.Item2.IsShadow ? 1 : 0) + (y.Item2.IsShadow ? 1 : 0),
-                    CameraViewAngle.fourthQuadrant => ((x.Item1.X - x.Item1.Y + x.Item1.Z - (y.Item1.X - y.Item1.Y + y.Item1.Z)) * 3) - (x.Item2.IsShadow ? 1 : 0) + (y.Item2.IsShadow ? 1 : 0),
+                    CameraViewAngle.firstQuadrant => (x.Item1.X + x.Item1.Y + x.Item1.Z - (y.Item1.X + y.Item1.Y + y.Item1.Z)) * 3 - (x.Item2.IsShadow ? 1 : 0) + (y.Item2.IsShadow ? 1 : 0),
+                    CameraViewAngle.secondQuadrant => (-x.Item1.X + x.Item1.Y + x.Item1.Z - (-y.Item1.X + y.Item1.Y + y.Item1.Z)) * 3 - (x.Item2.IsShadow ? 1 : 0) + (y.Item2.IsShadow ? 1 : 0),
+                    CameraViewAngle.thirdQuadrant => (-x.Item1.X - x.Item1.Y + x.Item1.Z - (-y.Item1.X - y.Item1.Y + y.Item1.Z)) * 3 - (x.Item2.IsShadow ? 1 : 0) + (y.Item2.IsShadow ? 1 : 0),
+                    CameraViewAngle.fourthQuadrant => (x.Item1.X - x.Item1.Y + x.Item1.Z - (y.Item1.X - y.Item1.Y + y.Item1.Z)) * 3 - (x.Item2.IsShadow ? 1 : 0) + (y.Item2.IsShadow ? 1 : 0),
                     _ => 0,
                 };
             }

@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace _3D_Tetris
+﻿namespace _3D_Tetris.WinForm
 {
     internal static class BWBoxSpriteGenerator
     {
         private readonly static SolidBrush paintBrush = new(Color.White);
-        private static Graphics g;
+        private static Graphics? g;
 
         //Return a new object if operation success ,otherwise ,null.
         internal static Image GenerateBWBoxSprite(int imageWidth, int imageHeight, int boxHeight, int xSurfaceLightness, int ySurfaceLightness, int zSurfaceLightness)
         {
-            if (imageWidth < 1 || boxHeight < 1 || imageHeight < boxHeight || xSurfaceLightness < 0 || xSurfaceLightness > 255 || ySurfaceLightness < 0 || ySurfaceLightness > 255 || zSurfaceLightness < 0 || zSurfaceLightness > 255)
+            if (imageWidth < 1 || boxHeight < 1 || imageHeight < boxHeight || xSurfaceLightness < 0 || xSurfaceLightness > byte.MaxValue || ySurfaceLightness < 0 || ySurfaceLightness > byte.MaxValue || zSurfaceLightness < 0 || zSurfaceLightness > byte.MaxValue)
             {
-                return null;
+                throw new Exception("Something is wrong here");
             }
 
             Color xSurfaceColor = Color.FromArgb(xSurfaceLightness, xSurfaceLightness, xSurfaceLightness);
@@ -39,14 +32,14 @@ namespace _3D_Tetris
             pointsBuffer[0] = new Point(imageWidth, zSurfaceHeight / 2);
             pointsBuffer[1] = new Point(imageWidth / 2, zSurfaceHeight);
             pointsBuffer[2] = new Point(imageWidth / 2, zSurfaceHeight + boxHeight);
-            pointsBuffer[3] = new Point(imageWidth, (zSurfaceHeight / 2) + boxHeight);
+            pointsBuffer[3] = new Point(imageWidth, zSurfaceHeight / 2 + boxHeight);
             g.FillPolygon(paintBrush, pointsBuffer);
 
             paintBrush.Color = ySurfaceColor;
             pointsBuffer[0] = new Point(0, zSurfaceHeight / 2);
             pointsBuffer[1] = new Point(imageWidth / 2, zSurfaceHeight);
             pointsBuffer[2] = new Point(imageWidth / 2, zSurfaceHeight + boxHeight);
-            pointsBuffer[3] = new Point(0, (zSurfaceHeight / 2) + boxHeight);
+            pointsBuffer[3] = new Point(0, zSurfaceHeight / 2 + boxHeight);
             g.FillPolygon(paintBrush, pointsBuffer);
 
             return Canvas;

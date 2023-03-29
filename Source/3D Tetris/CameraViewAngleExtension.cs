@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MainGame.Numeric;
 
 namespace _3D_Tetris
 {
-    internal static class CameraViewAngleExtension
+    public static class CameraViewAngleExtension
     {
         public static CameraViewAngle CounterClockWisedShift(this CameraViewAngle curViewAngle)
         {
@@ -29,6 +25,18 @@ namespace _3D_Tetris
                 CameraViewAngle.thirdQuadrant => CameraViewAngle.secondQuadrant,
                 CameraViewAngle.fourthQuadrant => CameraViewAngle.thirdQuadrant,
                 _ => default,
+            };
+        }
+
+        public static Matrix3x3i GenerateRotationMatrix(this CameraViewAngle viewAngle)
+        {
+            return viewAngle switch
+            {
+                CameraViewAngle.firstQuadrant => Matrix3x3i.Identity,
+                CameraViewAngle.secondQuadrant => new Matrix3x3i(0, 1, 0, -1, 0, 0, 0, 0, 1),
+                CameraViewAngle.thirdQuadrant => new Matrix3x3i(-1, 0, 0, 0, -1, 0, 0, 0, 1),
+                CameraViewAngle.fourthQuadrant => new Matrix3x3i(0, -1, 0, 1, 0, 0, 0, 0, 1),
+                _ => Matrix3x3i.Identity,
             };
         }
     }

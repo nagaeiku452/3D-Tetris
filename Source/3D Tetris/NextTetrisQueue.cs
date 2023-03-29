@@ -1,12 +1,6 @@
-﻿using MainGame.Numeric;
+﻿using _3D_Tetris.Drawing;
 using MainGame.Physics.StaticGridSystem;
-using MainGame.Physics.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _3D_Tetris
 {

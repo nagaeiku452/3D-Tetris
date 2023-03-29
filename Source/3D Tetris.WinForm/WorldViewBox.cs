@@ -2,14 +2,10 @@
 using MainGame.Physics.StaticGridSystem;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace _3D_Tetris
+namespace _3D_Tetris.WinForm
 {
-    internal class WorldViewBox
+    public class WorldViewBox
     {
         private readonly Dictionary<Vector3i, TetrisBodyBase> paintData;
         private Vector3i max;
@@ -37,7 +33,7 @@ namespace _3D_Tetris
         }
 
 
-        public WorldViewBox(Vector3i min, Vector3i max)
+        internal WorldViewBox(Vector3i min, Vector3i max)
         {
             Min = min;
             Max = max;
@@ -49,7 +45,7 @@ namespace _3D_Tetris
             paintData.Clear();
             foreach (T unitTetrisBody in world.GridCollisionObjects)
             {
-                if(unitTetrisBody.GridCollisionShape is null)
+                if (unitTetrisBody.GridCollisionShape is null)
                 {
                     continue;
                 }
@@ -65,7 +61,7 @@ namespace _3D_Tetris
                             for (int k = 0; k < max.Z - min.Z + 1; k++)
                             {
                                 Vector3i paintDataPos = unitTetrisBody.WorldTransform + shapePositionPair.Item2 + new Vector3i(i, j, k) + min;
-                                if(paintDataPos.X >= Min.X && paintDataPos.Y >= Min.Y && paintDataPos.Z >= Min.Z && paintDataPos.X <= Max.X && paintDataPos.Y <= Max.Y && paintDataPos.Z <= Max.Z)
+                                if (paintDataPos.X >= Min.X && paintDataPos.Y >= Min.Y && paintDataPos.Z >= Min.Z && paintDataPos.X <= Max.X && paintDataPos.Y <= Max.Y && paintDataPos.Z <= Max.Z)
                                 {
                                     paintData.TryAdd(paintDataPos, unitTetrisBody);
                                 }

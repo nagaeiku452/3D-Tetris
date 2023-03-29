@@ -4,8 +4,8 @@ using MainGame.Physics.StaticGridSystem;
 using System;
 using System.Collections.Generic;
 using MainGame.Physics.Utilities;
-using System.Drawing;
 using System.Diagnostics;
+using _3D_Tetris.Drawing;
 
 namespace _3D_Tetris
 {
@@ -30,7 +30,7 @@ namespace _3D_Tetris
             CollisionFlags = GridCollisionFlags.NoCollision,
             CollisionFilter = GridCollisionFlags.NoCollision,
             IsShadow = true,
-            PaintColor = Color.FromArgb(127, Color.Black)
+            PaintColor = Color.FromArgb(GameConfigData.CurrentTetrisShadowColorA, GameConfigData.CurrentTetrisShadowColorR, GameConfigData.CurrentTetrisShadowColorG, GameConfigData.CurrentTetrisShadowColorB)
         };
         private readonly MinLengthShapeSweepResult shapeSweepResult = new();
 

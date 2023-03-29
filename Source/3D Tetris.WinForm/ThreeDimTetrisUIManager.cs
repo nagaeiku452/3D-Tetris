@@ -1,22 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace _3D_Tetris
+namespace _3D_Tetris.WinForm
 {
     internal class ThreeDimTetrisUIManager
     {
-        private static readonly Color BackGroundColor = Color.FromArgb(GameConfigData.BackgroundColorR, GameConfigData.BackgroundColorG, GameConfigData.BackgroundColorB);
-        private MainWindow mainWindow;
-        public ThreeDimTetrisUIManager()
-        {
-
-        }
-
-        public void Initialize(MainWindow mainWindow)
+        private readonly Color BackGroundColor = GameConfigData.BackgroundColor;
+        private readonly MainWindow mainWindow;
+        public ThreeDimTetrisUIManager(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
             mainWindow.BackColor = BackGroundColor;
@@ -40,10 +31,12 @@ namespace _3D_Tetris
         {
             mainWindow.Score.Text = $"Score: {currentScore}";
         }
+
         public void ShowSliceCleared(int sliceCleared)
         {
             mainWindow.SliceCleared.Text = $"Slice cleared: {sliceCleared}";
         }
+
         public void ShowLevel(int level)
         {
             mainWindow.Level.Text = $"Level: {level}";

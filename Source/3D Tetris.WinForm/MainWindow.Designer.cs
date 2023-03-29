@@ -6,8 +6,9 @@ using System.Windows.Forms;
 using MainGame.Physics.StaticGridSystem;
 using MainGame.Physics.Blocking;
 using MainGame.Numeric;
+using Timer = System.Windows.Forms.Timer;
 
-namespace _3D_Tetris
+namespace _3D_Tetris.WinForm
 {
     partial class MainWindow : Form
     {
@@ -34,7 +35,7 @@ namespace _3D_Tetris
         //public EventHandler GameLoopEvent;
         //public EventHandler RenderLoopEvent;
 
-        WinFormControlUnit curControlUnit;
+        ThreeDimTetrisControl curControlUnit;
 
         //internal StaticGridDynamicWorld<TetrisBodyBase> World { get; private set; }
 
@@ -72,10 +73,9 @@ namespace _3D_Tetris
             //init world
 
             //init control unit
-            curControlUnit = new ThreeDimTetrisControlUnit();
-            curControlUnit.InitControlUnit(this);
-            gameLoopTimer.Tick += curControlUnit.OnGameLoopEvent;
-            renderLoopTimer.Tick += curControlUnit.OnRenderLoopEvent;
+            curControlUnit = new ThreeDimTetrisControl(this);
+            gameLoopTimer.Tick += OnGameLoopEvent;
+            renderLoopTimer.Tick += OnRenderLoopEvent;
             KeyDown += curControlUnit.OnKeyDown;
             KeyUp += curControlUnit.OnKeyUp;
             
@@ -134,6 +134,16 @@ namespace _3D_Tetris
             //g.DrawImage(spriteUnitAsset.Sprite, new Rectangle(default, spriteUnitAsset.Sprite.Size), 15, 15, spriteUnitAsset.Sprite.Width, spriteUnitAsset.Sprite.Height, GraphicsUnit.Pixel, imageAttributes);
             //g.DrawImage(i, new Rectangle(default, i.Size), 150, 150, i.Width, i.Height, GraphicsUnit.Pixel, imageAttributes);
 
+        }
+
+        private void OnRenderLoopEvent(object sender, EventArgs e)
+        {
+            curControlUnit.OnRenderLoopEvent(RenderLoopInterval);
+        }
+
+        private void OnGameLoopEvent(object sender, EventArgs e)
+        {
+            curControlUnit.OnGameLoopEvent(GameLoopInterval);
         }
 
         //protected override void OnKeyDown(KeyEventArgs e)

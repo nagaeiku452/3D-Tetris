@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace _3D_Tetris
+﻿namespace _3D_Tetris.WinForm
 {
     internal abstract class WinFormControlUnit : IDisposable
     {
+        protected readonly MainWindow mainWindow;
+
         public virtual void OnKeyDown(object sender, KeyEventArgs e)
         {
 
@@ -17,17 +12,20 @@ namespace _3D_Tetris
         {
 
         }
-        public virtual void OnGameLoopEvent(object sender, EventArgs e)
+        public virtual void OnGameLoopEvent(int millisecondPassed)
         {
 
         }
 
-        public virtual void OnRenderLoopEvent(object sender, EventArgs e)
+        public virtual void OnRenderLoopEvent(int millisecondPassed)
         {
 
         }
 
-        public abstract void InitControlUnit(MainWindow callerForm);
+        protected WinFormControlUnit(MainWindow callerForm)
+        {
+            mainWindow = callerForm;
+        }
 
         public abstract void Dispose();
 

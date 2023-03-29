@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace _3D_Tetris
+﻿namespace _3D_Tetris.WinForm
 {
     internal class BWBoxSprite : IDisposable
     {
@@ -13,14 +6,11 @@ namespace _3D_Tetris
         private byte yBrightness;
         private byte zBrightness;
 
-        public Image Sprite { get; private set; }
+        public Image Sprite { get; private set; } = null!;
         public int BoxHeight { get; private set; }
         public int ZSurfaceHeight { get; private set; }
         public int ZSurfaceWidth { get; private set; }
 
-        public BWBoxSprite()
-        {
-        }
         // do nothing if sprite is null
         public void ResizeImage(int boxHeight, int zSurfaceHeight, int zSurfaceWidth)
         {
@@ -59,7 +49,7 @@ namespace _3D_Tetris
 
         public void Dispose()
         {
-            ((IDisposable)Sprite).Dispose();
+            Sprite?.Dispose();
         }
     }
 }

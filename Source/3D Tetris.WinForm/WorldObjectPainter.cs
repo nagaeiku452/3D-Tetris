@@ -1,15 +1,10 @@
 ﻿using MainGame.Numeric;
 using MainGame.Physics.StaticGridSystem;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using _3D_Tetris.Drawing;
 
-namespace _3D_Tetris
+namespace _3D_Tetris.WinForm
 {
     internal class WorldObjectPainter : IDisposable
     {
@@ -30,9 +25,9 @@ namespace _3D_Tetris
             get => worldViewBox.Max;
             set => worldViewBox.Max = value;
         }
-        public Point UnitXProjection => new(boxSprite.ZSurfaceWidth / 2, -boxSprite.ZSurfaceHeight / 2);
-        public Point UnitYProjection => new(-boxSprite.ZSurfaceWidth / 2, -boxSprite.ZSurfaceHeight / 2);
-        public Point UnitZProjection => new(0, -boxSprite.BoxHeight);
+        public System.Drawing.Point UnitXProjection => new(boxSprite.ZSurfaceWidth / 2, -boxSprite.ZSurfaceHeight / 2);
+        public System.Drawing.Point UnitYProjection => new(-boxSprite.ZSurfaceWidth / 2, -boxSprite.ZSurfaceHeight / 2);
+        public System.Drawing.Point UnitZProjection => new(0, -boxSprite.BoxHeight);
 
         public CameraViewAngle CurrentViewAngle
         {
@@ -62,7 +57,7 @@ namespace _3D_Tetris
             boxSprite.AdjustSurfaceBrightness(xBrightness, yBrightness, zBrightness);
         }
 
-        public void PaintWorld<T>(StaticGridDynamicWorld<T> world, Image canvas, Point anchor, CameraViewAngle viewAngle, BoxShader boxShader) where T : TetrisBodyBase
+        public void PaintWorld<T>(StaticGridDynamicWorld<T>? world, Image? canvas, System.Drawing.Point anchor, CameraViewAngle viewAngle, BoxShader boxShader) where T : TetrisBodyBase
         {
             if (world == null)
             {
@@ -75,15 +70,15 @@ namespace _3D_Tetris
             }
 
             Graphics g = Graphics.FromImage(canvas);
-            foreach ((Point, TetrisBodyBase) paintData in cameraViewPlane.GenerateCameraView(worldViewBox.WorldViewInterception(world), worldViewBox.Min, worldViewBox.Max, viewAngle, new Point(boxSprite.ZSurfaceWidth / 2, boxSprite.ZSurfaceHeight / 2), new Point(-boxSprite.ZSurfaceWidth / 2, boxSprite.ZSurfaceHeight / 2), new Point(0, -boxSprite.BoxHeight)))
-            {                
+            foreach ((Drawing.Point, TetrisBodyBase) paintData in cameraViewPlane.GenerateCameraView(worldViewBox.WorldViewInterception(world), worldViewBox.Min, worldViewBox.Max, viewAngle, new Drawing.Point(boxSprite.ZSurfaceWidth / 2, boxSprite.ZSurfaceHeight / 2), new Drawing.Point(-boxSprite.ZSurfaceWidth / 2, boxSprite.ZSurfaceHeight / 2), new Drawing.Point(0, -boxSprite.BoxHeight)).Select(v => ((Drawing.Point, TetrisBodyBase))v))
+            {
                 g.SmoothingMode = SmoothingMode.AntiAlias;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
                 //ColorMatrixGenerator.GenerateColorMatrix(Color.FromArgb(paintColor.A, (int)(gentColorInfo.Item1 * 255), (int)(gentColorInfo.Item2 * 255), (int)(gentColorInfo.Item3 * 255)), matrix);
-                boxShader?.AddAdditionInfo(paintData.Item2, "target");
-                ColorMatrixGenerator.GenerateColorMatrix(boxShader != null ? boxShader.ColorAdjust(paintData.Item2.PaintColor) : paintData.Item2.PaintColor, matrix);
+                boxShader?.AddAdditionInfo(paintData.Item2, "targetTransform");
+                ColorMatrixGenerator.GenerateColorMatrix(boxShader != null ? boxShader.ColorAdjust(paintData.Item2.PaintColor.ExplicitConvert()) : paintData.Item2.PaintColor.ExplicitConvert(), matrix);
                 imageAttributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                g.DrawImage(boxSprite.Sprite, new Rectangle(new Point(anchor.X + paintData.Item1.X - boxSprite.ZSurfaceWidth / 2, anchor.Y + paintData.Item1.Y - boxSprite.BoxHeight), boxSprite.Sprite.Size), 0, 0, boxSprite.Sprite.Width, boxSprite.Sprite.Height, GraphicsUnit.Pixel, imageAttributes);
+                g.DrawImage(boxSprite.Sprite!, new Rectangle(new System.Drawing.Point(anchor.X + paintData.Item1.X - boxSprite.ZSurfaceWidth / 2, anchor.Y + paintData.Item1.Y - boxSprite.BoxHeight), boxSprite.Sprite.Size), 0, 0, boxSprite.Sprite.Width, boxSprite.Sprite.Height, GraphicsUnit.Pixel, imageAttributes);
             }
 
             //ColorMatrixGenerator.GenerateColorMatrix(kvp.Value, matrix);
@@ -93,7 +88,7 @@ namespace _3D_Tetris
 
         public void Dispose()
         {
-            ((IDisposable)imageAttributes).Dispose();
+            imageAttributes.Dispose();
         }
     }
 }
