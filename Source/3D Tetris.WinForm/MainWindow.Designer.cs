@@ -17,8 +17,8 @@ namespace _3D_Tetris.WinForm
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        private readonly Timer gameLoopTimer = new Timer() { Interval = GameConfigData.GameLoopInterval };
-        private readonly Timer renderLoopTimer = new Timer() { Interval = GameConfigData.RenderInterval };
+        private readonly Timer gameLoopTimer = new Timer() { Interval = 1 };
+        private readonly Timer renderLoopTimer = new Timer() { Interval = 1 };
 
 
         public int GameLoopInterval
@@ -78,7 +78,7 @@ namespace _3D_Tetris.WinForm
             renderLoopTimer.Tick += OnRenderLoopEvent;
             KeyDown += curControlUnit.OnKeyDown;
             KeyUp += curControlUnit.OnKeyUp;
-            
+
 
             //start the timer
             gameLoopTimer.Start();
@@ -138,12 +138,12 @@ namespace _3D_Tetris.WinForm
 
         private void OnRenderLoopEvent(object sender, EventArgs e)
         {
-            curControlUnit.OnRenderLoopEvent(RenderLoopInterval);
+            curControlUnit.OnRenderLoopEvent();
         }
 
         private void OnGameLoopEvent(object sender, EventArgs e)
         {
-            curControlUnit.OnGameLoopEvent(GameLoopInterval);
+            curControlUnit.OnGameLoopEvent();
         }
 
         //protected override void OnKeyDown(KeyEventArgs e)
@@ -170,230 +170,228 @@ namespace _3D_Tetris.WinForm
         /// </summary>
         private void InitializeComponent()
         {
-            this.GameWindow = new System.Windows.Forms.PictureBox();
-            this.Score = new System.Windows.Forms.Label();
-            this.NextTetris1 = new System.Windows.Forms.Label();
-            this.NextTetris2 = new System.Windows.Forms.Label();
-            this.Log = new System.Windows.Forms.TextBox();
-            this.NextTetris3 = new System.Windows.Forms.Label();
-            this.WorldOrigin = new System.Windows.Forms.Label();
-            this.Level = new System.Windows.Forms.Label();
-            this.SliceCleared = new System.Windows.Forms.Label();
-            this.PlayedTime = new System.Windows.Forms.Label();
-            this.HoldTetris = new System.Windows.Forms.Label();
-            this.StatisicsPanel = new System.Windows.Forms.Panel();
-            this.Hold = new System.Windows.Forms.Label();
-            this.Next = new System.Windows.Forms.Label();
-            this.TotalTetrisDropped = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.GameWindow)).BeginInit();
-            this.StatisicsPanel.SuspendLayout();
-            this.SuspendLayout();
+            GameWindow = new PictureBox();
+            Score = new Label();
+            NextTetris1 = new Label();
+            NextTetris2 = new Label();
+            Log = new TextBox();
+            NextTetris3 = new Label();
+            WorldOrigin = new Label();
+            Level = new Label();
+            SliceCleared = new Label();
+            PlayedTime = new Label();
+            HoldTetris = new Label();
+            StatisicsPanel = new Panel();
+            TotalTetrisDropped = new Label();
+            Hold = new Label();
+            Next = new Label();
+            ((System.ComponentModel.ISupportInitialize)GameWindow).BeginInit();
+            StatisicsPanel.SuspendLayout();
+            SuspendLayout();
             // 
             // GameWindow
             // 
-            this.GameWindow.Cursor = System.Windows.Forms.Cursors.Default;
-            this.GameWindow.Enabled = false;
-            this.GameWindow.Location = new System.Drawing.Point(0, 0);
-            this.GameWindow.Margin = new System.Windows.Forms.Padding(0);
-            this.GameWindow.Name = "GameWindow";
-            this.GameWindow.Size = new System.Drawing.Size(1280, 720);
-            this.GameWindow.TabIndex = 1;
-            this.GameWindow.TabStop = false;
+            GameWindow.Enabled = false;
+            GameWindow.Location = new Point(0, 0);
+            GameWindow.Margin = new Padding(0);
+            GameWindow.Name = "GameWindow";
+            GameWindow.Size = new Size(1280, 720);
+            GameWindow.TabIndex = 1;
+            GameWindow.TabStop = false;
             // 
             // Score
             // 
-            this.Score.AutoEllipsis = true;
-            this.Score.AutoSize = true;
-            this.Score.BackColor = System.Drawing.Color.Transparent;
-            this.Score.Font = new System.Drawing.Font("Miriam Mono CLM", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Score.ForeColor = System.Drawing.Color.White;
-            this.Score.Location = new System.Drawing.Point(0, 28);
-            this.Score.Name = "Score";
-            this.Score.Size = new System.Drawing.Size(217, 28);
-            this.Score.TabIndex = 2;
-            this.Score.Text = "current score:100";
-            this.Score.UseCompatibleTextRendering = true;
+            Score.AutoEllipsis = true;
+            Score.AutoSize = true;
+            Score.BackColor = Color.Transparent;
+            Score.Font = new Font("Miriam Mono CLM", 15F, FontStyle.Regular, GraphicsUnit.Point);
+            Score.ForeColor = Color.White;
+            Score.Location = new Point(0, 28);
+            Score.Name = "Score";
+            Score.Size = new Size(217, 28);
+            Score.TabIndex = 2;
+            Score.Text = "current score:100";
+            Score.UseCompatibleTextRendering = true;
             // 
             // NextTetris1
             // 
-            this.NextTetris1.AutoSize = true;
-            this.NextTetris1.Location = new System.Drawing.Point(370, 230);
-            this.NextTetris1.Name = "NextTetris1";
-            this.NextTetris1.Size = new System.Drawing.Size(71, 15);
-            this.NextTetris1.TabIndex = 3;
-            this.NextTetris1.Text = "NextTetris1";
-            this.NextTetris1.Visible = false;
+            NextTetris1.AutoSize = true;
+            NextTetris1.Location = new Point(370, 230);
+            NextTetris1.Name = "NextTetris1";
+            NextTetris1.Size = new Size(71, 15);
+            NextTetris1.TabIndex = 3;
+            NextTetris1.Text = "NextTetris1";
+            NextTetris1.Visible = false;
             // 
             // NextTetris2
             // 
-            this.NextTetris2.AutoSize = true;
-            this.NextTetris2.Location = new System.Drawing.Point(370, 330);
-            this.NextTetris2.Name = "NextTetris2";
-            this.NextTetris2.Size = new System.Drawing.Size(71, 15);
-            this.NextTetris2.TabIndex = 4;
-            this.NextTetris2.Text = "NextTetris2";
-            this.NextTetris2.Visible = false;
+            NextTetris2.AutoSize = true;
+            NextTetris2.Location = new Point(370, 330);
+            NextTetris2.Name = "NextTetris2";
+            NextTetris2.Size = new Size(71, 15);
+            NextTetris2.TabIndex = 4;
+            NextTetris2.Text = "NextTetris2";
+            NextTetris2.Visible = false;
             // 
             // Log
             // 
-            this.Log.Enabled = false;
-            this.Log.Location = new System.Drawing.Point(978, 399);
-            this.Log.Multiline = true;
-            this.Log.Name = "Log";
-            this.Log.Size = new System.Drawing.Size(100, 188);
-            this.Log.TabIndex = 5;
-            this.Log.Text = "Log";
+            Log.Enabled = false;
+            Log.Location = new Point(978, 399);
+            Log.Multiline = true;
+            Log.Name = "Log";
+            Log.Size = new Size(100, 188);
+            Log.TabIndex = 5;
+            Log.Text = "Log";
             // 
             // NextTetris3
             // 
-            this.NextTetris3.AutoSize = true;
-            this.NextTetris3.Location = new System.Drawing.Point(370, 430);
-            this.NextTetris3.Name = "NextTetris3";
-            this.NextTetris3.Size = new System.Drawing.Size(71, 15);
-            this.NextTetris3.TabIndex = 6;
-            this.NextTetris3.Text = "NextTetris3";
-            this.NextTetris3.Visible = false;
+            NextTetris3.AutoSize = true;
+            NextTetris3.Location = new Point(370, 430);
+            NextTetris3.Name = "NextTetris3";
+            NextTetris3.Size = new Size(71, 15);
+            NextTetris3.TabIndex = 6;
+            NextTetris3.Text = "NextTetris3";
+            NextTetris3.Visible = false;
             // 
             // WorldOrigin
             // 
-            this.WorldOrigin.AutoSize = true;
-            this.WorldOrigin.Enabled = false;
-            this.WorldOrigin.Location = new System.Drawing.Point(635, 515);
-            this.WorldOrigin.Name = "WorldOrigin";
-            this.WorldOrigin.Size = new System.Drawing.Size(77, 15);
-            this.WorldOrigin.TabIndex = 7;
-            this.WorldOrigin.Text = "WorldOrigin";
-            this.WorldOrigin.Visible = false;
+            WorldOrigin.AutoSize = true;
+            WorldOrigin.Enabled = false;
+            WorldOrigin.Location = new Point(635, 515);
+            WorldOrigin.Name = "WorldOrigin";
+            WorldOrigin.Size = new Size(77, 15);
+            WorldOrigin.TabIndex = 7;
+            WorldOrigin.Text = "WorldOrigin";
+            WorldOrigin.Visible = false;
             // 
             // Level
             // 
-            this.Level.AutoEllipsis = true;
-            this.Level.AutoSize = true;
-            this.Level.BackColor = System.Drawing.Color.Transparent;
-            this.Level.Font = new System.Drawing.Font("Miriam Mono CLM", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Level.ForeColor = System.Drawing.Color.White;
-            this.Level.Location = new System.Drawing.Point(0, 0);
-            this.Level.Name = "Level";
-            this.Level.Size = new System.Drawing.Size(94, 28);
-            this.Level.TabIndex = 8;
-            this.Level.Text = "level:1";
-            this.Level.UseCompatibleTextRendering = true;
+            Level.AutoEllipsis = true;
+            Level.AutoSize = true;
+            Level.BackColor = Color.Transparent;
+            Level.Font = new Font("Miriam Mono CLM", 15F, FontStyle.Regular, GraphicsUnit.Point);
+            Level.ForeColor = Color.White;
+            Level.Location = new Point(0, 0);
+            Level.Name = "Level";
+            Level.Size = new Size(94, 28);
+            Level.TabIndex = 8;
+            Level.Text = "level:1";
+            Level.UseCompatibleTextRendering = true;
             // 
             // SliceCleared
             // 
-            this.SliceCleared.AutoSize = true;
-            this.SliceCleared.BackColor = System.Drawing.Color.Transparent;
-            this.SliceCleared.Font = new System.Drawing.Font("Miriam Mono CLM", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.SliceCleared.ForeColor = System.Drawing.Color.White;
-            this.SliceCleared.Location = new System.Drawing.Point(0, 56);
-            this.SliceCleared.Name = "SliceCleared";
-            this.SliceCleared.Size = new System.Drawing.Size(230, 28);
-            this.SliceCleared.TabIndex = 9;
-            this.SliceCleared.Text = "sliced cleared:100";
-            this.SliceCleared.UseCompatibleTextRendering = true;
+            SliceCleared.AutoSize = true;
+            SliceCleared.BackColor = Color.Transparent;
+            SliceCleared.Font = new Font("Miriam Mono CLM", 15F, FontStyle.Regular, GraphicsUnit.Point);
+            SliceCleared.ForeColor = Color.White;
+            SliceCleared.Location = new Point(0, 56);
+            SliceCleared.Name = "SliceCleared";
+            SliceCleared.Size = new Size(230, 28);
+            SliceCleared.TabIndex = 9;
+            SliceCleared.Text = "sliced cleared:100";
+            SliceCleared.UseCompatibleTextRendering = true;
             // 
             // PlayedTime
             // 
-            this.PlayedTime.AutoSize = true;
-            this.PlayedTime.BackColor = System.Drawing.Color.Transparent;
-            this.PlayedTime.Font = new System.Drawing.Font("Miriam Mono CLM", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.PlayedTime.ForeColor = System.Drawing.Color.White;
-            this.PlayedTime.Location = new System.Drawing.Point(0, 84);
-            this.PlayedTime.Name = "PlayedTime";
-            this.PlayedTime.Size = new System.Drawing.Size(267, 28);
-            this.PlayedTime.TabIndex = 10;
-            this.PlayedTime.Text = "Played time:100:00:00";
-            this.PlayedTime.UseCompatibleTextRendering = true;
+            PlayedTime.AutoSize = true;
+            PlayedTime.BackColor = Color.Transparent;
+            PlayedTime.Font = new Font("Miriam Mono CLM", 15F, FontStyle.Regular, GraphicsUnit.Point);
+            PlayedTime.ForeColor = Color.White;
+            PlayedTime.Location = new Point(0, 84);
+            PlayedTime.Name = "PlayedTime";
+            PlayedTime.Size = new Size(267, 28);
+            PlayedTime.TabIndex = 10;
+            PlayedTime.Text = "Played time:100:00:00";
+            PlayedTime.UseCompatibleTextRendering = true;
             // 
             // HoldTetris
             // 
-            this.HoldTetris.AutoSize = true;
-            this.HoldTetris.Location = new System.Drawing.Point(370, 70);
-            this.HoldTetris.Name = "HoldTetris";
-            this.HoldTetris.Size = new System.Drawing.Size(65, 15);
-            this.HoldTetris.TabIndex = 11;
-            this.HoldTetris.Text = "HoldTetris";
-            this.HoldTetris.Visible = false;
+            HoldTetris.AutoSize = true;
+            HoldTetris.Location = new Point(370, 70);
+            HoldTetris.Name = "HoldTetris";
+            HoldTetris.Size = new Size(65, 15);
+            HoldTetris.TabIndex = 11;
+            HoldTetris.Text = "HoldTetris";
+            HoldTetris.Visible = false;
             // 
             // StatisicsPanel
             // 
-            this.StatisicsPanel.BackColor = System.Drawing.Color.Transparent;
-            this.StatisicsPanel.Controls.Add(this.TotalTetrisDropped);
-            this.StatisicsPanel.Controls.Add(this.Level);
-            this.StatisicsPanel.Controls.Add(this.Score);
-            this.StatisicsPanel.Controls.Add(this.PlayedTime);
-            this.StatisicsPanel.Controls.Add(this.SliceCleared);
-            this.StatisicsPanel.ForeColor = System.Drawing.Color.Transparent;
-            this.StatisicsPanel.Location = new System.Drawing.Point(833, 106);
-            this.StatisicsPanel.Name = "StatisicsPanel";
-            this.StatisicsPanel.Size = new System.Drawing.Size(319, 259);
-            this.StatisicsPanel.TabIndex = 12;
-            // 
-            // Hold
-            // 
-            this.Hold.AutoSize = true;
-            this.Hold.Font = new System.Drawing.Font("Segoe UI Symbol", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.Hold.Location = new System.Drawing.Point(250, 70);
-            this.Hold.Name = "Hold";
-            this.Hold.Size = new System.Drawing.Size(59, 28);
-            this.Hold.TabIndex = 13;
-            this.Hold.Text = "Hold";
-            // 
-            // Next
-            // 
-            this.Next.AutoSize = true;
-            this.Next.Font = new System.Drawing.Font("Segoe UI Symbol", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.Next.Location = new System.Drawing.Point(250, 230);
-            this.Next.Name = "Next";
-            this.Next.Size = new System.Drawing.Size(57, 28);
-            this.Next.TabIndex = 14;
-            this.Next.Text = "Next";
+            StatisicsPanel.BackColor = Color.Transparent;
+            StatisicsPanel.Controls.Add(TotalTetrisDropped);
+            StatisicsPanel.Controls.Add(Level);
+            StatisicsPanel.Controls.Add(Score);
+            StatisicsPanel.Controls.Add(PlayedTime);
+            StatisicsPanel.Controls.Add(SliceCleared);
+            StatisicsPanel.ForeColor = Color.Transparent;
+            StatisicsPanel.Location = new Point(833, 106);
+            StatisicsPanel.Name = "StatisicsPanel";
+            StatisicsPanel.Size = new Size(319, 259);
+            StatisicsPanel.TabIndex = 12;
             // 
             // TotalTetrisDropped
             // 
-            this.TotalTetrisDropped.AutoSize = true;
-            this.TotalTetrisDropped.BackColor = System.Drawing.Color.Transparent;
-            this.TotalTetrisDropped.Font = new System.Drawing.Font("Miriam Mono CLM", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TotalTetrisDropped.ForeColor = System.Drawing.Color.White;
-            this.TotalTetrisDropped.Location = new System.Drawing.Point(0, 112);
-            this.TotalTetrisDropped.Name = "TotalTetrisDropped";
-            this.TotalTetrisDropped.Size = new System.Drawing.Size(230, 28);
-            this.TotalTetrisDropped.TabIndex = 11;
-            this.TotalTetrisDropped.Text = "Tetris Dropped:100";
-            this.TotalTetrisDropped.UseCompatibleTextRendering = true;
+            TotalTetrisDropped.AutoSize = true;
+            TotalTetrisDropped.BackColor = Color.Transparent;
+            TotalTetrisDropped.Font = new Font("Miriam Mono CLM", 15F, FontStyle.Regular, GraphicsUnit.Point);
+            TotalTetrisDropped.ForeColor = Color.White;
+            TotalTetrisDropped.Location = new Point(0, 112);
+            TotalTetrisDropped.Name = "TotalTetrisDropped";
+            TotalTetrisDropped.Size = new Size(230, 28);
+            TotalTetrisDropped.TabIndex = 11;
+            TotalTetrisDropped.Text = "Tetris Dropped:100";
+            TotalTetrisDropped.UseCompatibleTextRendering = true;
+            // 
+            // Hold
+            // 
+            Hold.AutoSize = true;
+            Hold.Font = new Font("Segoe UI Symbol", 15F, FontStyle.Bold, GraphicsUnit.Point);
+            Hold.Location = new Point(250, 70);
+            Hold.Name = "Hold";
+            Hold.Size = new Size(59, 28);
+            Hold.TabIndex = 13;
+            Hold.Text = "Hold";
+            // 
+            // Next
+            // 
+            Next.AutoSize = true;
+            Next.Font = new Font("Segoe UI Symbol", 15F, FontStyle.Bold, GraphicsUnit.Point);
+            Next.Location = new Point(250, 230);
+            Next.Name = "Next";
+            Next.Size = new Size(57, 28);
+            Next.TabIndex = 14;
+            Next.Text = "Next";
             // 
             // MainWindow
             // 
-            this.AllowDrop = true;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
-            this.ClientSize = new System.Drawing.Size(1264, 681);
-            this.ControlBox = false;
-            this.Controls.Add(this.Next);
-            this.Controls.Add(this.Hold);
-            this.Controls.Add(this.NextTetris3);
-            this.Controls.Add(this.NextTetris2);
-            this.Controls.Add(this.NextTetris1);
-            this.Controls.Add(this.StatisicsPanel);
-            this.Controls.Add(this.HoldTetris);
-            this.Controls.Add(this.WorldOrigin);
-            this.Controls.Add(this.Log);
-            this.Controls.Add(this.GameWindow);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.KeyPreview = true;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "MainWindow";
-            this.ShowIcon = false;
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.Text = "3D Tetris";
-            ((System.ComponentModel.ISupportInitialize)(this.GameWindow)).EndInit();
-            this.StatisicsPanel.ResumeLayout(false);
-            this.StatisicsPanel.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AllowDrop = true;
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            AutoValidate = AutoValidate.EnableAllowFocusChange;
+            ClientSize = new Size(1264, 681);
+            ControlBox = false;
+            Controls.Add(Next);
+            Controls.Add(Hold);
+            Controls.Add(NextTetris3);
+            Controls.Add(NextTetris2);
+            Controls.Add(NextTetris1);
+            Controls.Add(StatisicsPanel);
+            Controls.Add(HoldTetris);
+            Controls.Add(WorldOrigin);
+            Controls.Add(Log);
+            Controls.Add(GameWindow);
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            KeyPreview = true;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "MainWindow";
+            ShowIcon = false;
+            SizeGripStyle = SizeGripStyle.Hide;
+            Text = "3D Tetris";
+            ((System.ComponentModel.ISupportInitialize)GameWindow).EndInit();
+            StatisicsPanel.ResumeLayout(false);
+            StatisicsPanel.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

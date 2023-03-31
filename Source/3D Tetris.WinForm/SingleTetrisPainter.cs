@@ -19,7 +19,7 @@ namespace _3D_Tetris.WinForm
             objectPainter = new WorldObjectPainter(boxSprite, new WorldViewBox(Vector3i.Zero, Vector3i.Zero));
         }
 
-        internal void PaintSingleTetris(Image? backImage, System.Drawing.Point anchor, GridCollisionShape shape, System.Drawing.Color color, bool IsHeld = false)
+        internal void PaintSingleTetris(Graphics g, System.Drawing.Point anchor, GridCollisionShape shape, System.Drawing.Color color, bool IsHeld = false)
         {
             singleTetrisModel.GridCollisionShape = shape;
             singleTetrisModel.PaintColor = color;
@@ -29,7 +29,7 @@ namespace _3D_Tetris.WinForm
             objectPainter.ViewBoxMin = GetTrueMin(singleTetrisModel.MinPoint, objectPainter.ViewBoxMin);
             objectPainter.ViewBoxMax = GetTrueMax(singleTetrisModel.MaxPoint, objectPainter.ViewBoxMax);
             shader.AddAdditionInfo(IsHeld, "Held");
-            objectPainter.PaintWorld(singleTetrisWorld, backImage, anchor, CameraViewAngle.firstQuadrant, shader);
+            objectPainter.PaintWorld(singleTetrisWorld, g, anchor, CameraViewAngle.firstQuadrant, shader);
 
             singleTetrisWorld.RemoveCollisionObject(singleTetrisModel);
         }

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace _3D_Tetris
+namespace _3D_Tetris.WinForm
 {
-    internal class ThreeDimTetrisTotalPlayTimeCounter
+    internal class TotalPlayTimeCounter
     {
         public TimeSpan TotalPlayTime { get; private set; }
 

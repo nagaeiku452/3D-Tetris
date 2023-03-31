@@ -18,7 +18,6 @@ namespace _3D_Tetris
         private readonly ThreeDimTetrisSliceClearedCounter sliceCounter = new();
         private readonly ThreeDimTetrisLevelCounter levelCounter = new();
         private readonly ThreeDimTetrisFallTimer fallTimer = new();
-        private readonly ThreeDimTetrisTotalPlayTimeCounter playTimeCounter = new();
         private readonly NextTetrisQueue generator = new()
         {
             QueueSize = 3,
@@ -26,10 +25,11 @@ namespace _3D_Tetris
 
         public IEnumerable<(GridCollisionShape, Color)> NextTetrisData => generator.EnumerateNextTetrisData;
 
+        public event EventHandler<EventArgs> WorldUpdated;
+
         public int CurrentScore => scoreCounter.CurrentScore;
         public int CurrentClearedSlices => sliceCounter.TotalSliceCleared;
         public int CurrentLevel => levelCounter.CurrentLevel;
-        public TimeSpan TotalPlayTime => playTimeCounter.TotalPlayTime;
         public int TotalTetrisDropped => dropCounter.TotalTetrisDropped;
 
         public TetrisBodyBase CurrentTetris => currentTetris.Instance;
@@ -38,7 +38,8 @@ namespace _3D_Tetris
         public StaticGridDynamicWorld<TetrisBodyBase> TetrisWorld => TetrisField.TetrisWorld;
 
         public CameraViewAngle CurViewAngle { get; private set; } = CameraViewAngle.firstQuadrant;
-        public bool IsHeldTetris { get; private set; } = false;
+        public bool IsHeldTetris { get; private set; }
+        private TetrisGameInstruction pendingInstruction = TetrisGameInstruction.None;
         //int tetrisCount = 0;
 
         public static readonly Color BackGroundColor = Color.FromRgb(GameConfigData.BackgroundColorR, GameConfigData.BackgroundColorG, GameConfigData.BackgroundColorB);
@@ -57,8 +58,6 @@ namespace _3D_Tetris
             fallTimer.ResetFallInterval(levelCounter.CurrentLevel);
             fallTimer.TetrisFall += OnCurrentTetrisFallIntervalTimeUp;
 
-            playTimeCounter.InitTotalPlayTime();
-
             GeneratrNewTetris(currentTetris, TetrisField, CurViewAngle, generator, false);
         }
 
@@ -73,10 +72,18 @@ namespace _3D_Tetris
 
         public void OnKeyDown(TetrisGameInstruction newKeyInstruction)
         {
+            if (pendingInstruction == TetrisGameInstruction.None)
+            {
+                pendingInstruction = newKeyInstruction;
+            }
+        }
+
+        private void ExecuteGameInstruction(TetrisGameInstruction newKeyInstruction)
+        {
             switch (newKeyInstruction)
             {
                 case TetrisGameInstruction.None:
-                    break;
+                    return;
                 case TetrisGameInstruction.MoveUpLeft:
                     TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, CurViewAngle) * -Vector3i.UnitX);
                     break;
@@ -115,7 +122,7 @@ namespace _3D_Tetris
                     break;
                 case TetrisGameInstruction.SoftDrop:
                     fallTimer.SoftDropEnabled = true;
-                    break;
+                    return;
                 case TetrisGameInstruction.HardDrop:
                     TetrisField.CurrentTetrisHardDrop();
                     break;
@@ -126,7 +133,11 @@ namespace _3D_Tetris
                     }
                     break;
                 default:
-                    break;
+                    return;
+            }
+            if (newKeyInstruction != TetrisGameInstruction.SoftDrop || newKeyInstruction != TetrisGameInstruction.None)
+            {
+                WorldUpdated?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -229,10 +240,11 @@ namespace _3D_Tetris
         //    bigSingleTetrisPainter.PaintSingleTetris(backImage, anchor, shape, color, IsHeld);
         //}
 
-        public void OnGameLoopEvent(int millisecondPassed)
+        public void OnGameLoopEvent()
         {
+            ExecuteGameInstruction(pendingInstruction);
+            pendingInstruction = TetrisGameInstruction.None;
             fallTimer.Tick();
-            playTimeCounter.AddPlayTime(millisecondPassed);
         }
 
         //private void PaintWorld(StaticGridDynamicWorld<TetrisBodyBase> world, Image canvas, CameraViewAngle curViewAngle)
@@ -309,6 +321,7 @@ namespace _3D_Tetris
         private void OnCurrentTetrisFallIntervalTimeUp(object sender, FallEventArgs fe)
         {
             TetrisField.FallCurrentTetris();
+            WorldUpdated?.Invoke(this, EventArgs.Empty);
             if (fe.IsSoftDrop)
             {
                 scoreCounter.OnCurrentTetrisSoftDropped(levelCounter.CurrentLevel);

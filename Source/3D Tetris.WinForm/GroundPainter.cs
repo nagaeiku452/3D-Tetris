@@ -46,16 +46,13 @@ namespace _3D_Tetris.WinForm
             ground?.Dispose();
         }
 
-        public void PaintGround(Image? canvas, Point anchor, bool doYAxisReflection)
+        public void PaintGround(Graphics g, Point anchor, bool doYAxisReflection)
         {
-            if (canvas == null || ground == null)
+            if (g == null || ground == null)
             {
                 return;
             }
 
-            Graphics g = Graphics.FromImage(canvas);
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
             PointF reflectedAnchor = (PointF)anchor + new SizeF(groundOrigin.X, -groundOrigin.Y) - new SizeF(unitXProjection.X * yAxis * 2, 0);
             if (doYAxisReflection)
             {

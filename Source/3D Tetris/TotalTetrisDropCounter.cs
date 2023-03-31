@@ -2,7 +2,7 @@
 {
     class TotalTetrisDropCounter
     {
-        public int TotalTetrisDropped { get; private set; } = 0;
+        public int TotalTetrisDropped { get; private set; }
         public void Init()
         {
             TotalTetrisDropped = 0;

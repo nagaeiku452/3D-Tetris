@@ -12,12 +12,12 @@
         {
 
         }
-        public virtual void OnGameLoopEvent(int millisecondPassed)
+        public virtual void OnGameLoopEvent()
         {
 
         }
 
-        public virtual void OnRenderLoopEvent(int millisecondPassed)
+        public virtual void OnRenderLoopEvent()
         {
 
         }

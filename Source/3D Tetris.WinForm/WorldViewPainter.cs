@@ -44,14 +44,14 @@ namespace _3D_Tetris.WinForm
             objectPainter.ViewBoxMax = viewBoxMax;
         }
 
-        public void PaintWorld<T>(StaticGridDynamicWorld<T> world, Image canvas, Point originPos, CameraViewAngle viewAngle = CameraViewAngle.firstQuadrant) where T : TetrisBodyBase
+        public void PaintWorld<T>(StaticGridDynamicWorld<T> world, Graphics g, Point originPos, CameraViewAngle viewAngle = CameraViewAngle.firstQuadrant) where T : TetrisBodyBase
         {
             bool b = viewAngle == CameraViewAngle.secondQuadrant || viewAngle == CameraViewAngle.fourthQuadrant;
 
             shader.AddAdditionInfo(objectPainter.ViewBoxMin, "viewBoxMin");
             shader.AddAdditionInfo(objectPainter.ViewBoxMax, "viewBoxMax");
-            groundPainter?.PaintGround(canvas, originPos - new Size(b ? (objectPainter.ViewBoxMax.Y - objectPainter.ViewBoxMin.Y + 1) * objectPainter.UnitYProjection.X * 2 : 0, 0), b);
-            objectPainter.PaintWorld(world, canvas, originPos, viewAngle, shader);
+            groundPainter?.PaintGround(g, originPos - new Size(b ? (objectPainter.ViewBoxMax.Y - objectPainter.ViewBoxMin.Y + 1) * objectPainter.UnitYProjection.X * 2 : 0, 0), b);
+            objectPainter.PaintWorld(world, g, originPos, viewAngle, shader);
         }
 
         public void Dispose()

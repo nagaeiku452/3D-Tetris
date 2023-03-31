@@ -13,7 +13,7 @@ namespace _3D_Tetris
     {
         private readonly IThreeDimTetrisWallKickConfiguration<TetrisBodyBase> wallKickConfiguration = new TetraCubeBasicWallKickConfiguration();
         private readonly TetraCubeTetrisWallKickResult<TetrisBodyBase> wallKickResult = new();
-        private RotatableTetris currentTetris = null;
+        private RotatableTetris currentTetris;
         private readonly static GridGravity oriGravity = new(GameConfigData.TetrisWorldGravityScalar, StaticGridDirection.NegativeUnitZ);
         //private readonly IThreeDimTetrisSet threeDimTetrisSet = new ITetraCubeTetrisSet();
 
@@ -201,7 +201,6 @@ namespace _3D_Tetris
             walls.Add(wall_3);
             walls.Add(wall_4);
         }
-
 
         //private static void GenerateNewCurrentTetris(IThreeDimTetrisSet threeDimTetrisSet, RotatableTetris currentTetris, ref (GridCollisionShape, Color) nextTetrisData, StaticGridDynamicWorld<TetrisBodyBase> world)
         //{

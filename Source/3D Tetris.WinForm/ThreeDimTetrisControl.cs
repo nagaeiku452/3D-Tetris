@@ -1,13 +1,17 @@
 ﻿using MainGame.Numeric;
 using MainGame.Physics.StaticGridSystem;
+using System.Drawing.Drawing2D;
 using System.Reflection.Emit;
 
 namespace _3D_Tetris.WinForm
 {
     internal class ThreeDimTetrisControl : WinFormControlUnit
     {
+        private bool testFlag = false;
+
         private Image frontImage;
         private Image backImage;
+        private readonly Image worldImage;
 
         private readonly WorldViewPainter worldViewPainter;
 
@@ -16,7 +20,11 @@ namespace _3D_Tetris.WinForm
         private readonly Point[] nextTetrisPos = new Point[3];
 
         private readonly ThreeDimTetrisControlUnit mainCotrolUnit;
+        private readonly TotalPlayTimeCounter totalPlayTimeCounter = new();
         private readonly ThreeDimTetrisUIManager uIManager;
+        private readonly FpsCounter fpsCounter = new();
+        private readonly ElapsedTimeCounter gameLoopElapsedTimeCounter = new(GameConfigData.GameLoopInterval);
+        private readonly ElapsedTimeCounter renderLoopElapsedTimeCounter = new(GameConfigData.RenderInterval);
 
         public ThreeDimTetrisControl(MainWindow callerForm) : base(callerForm)
         {
@@ -38,6 +46,7 @@ namespace _3D_Tetris.WinForm
 
             backImage = new Bitmap(mainWindow.GameWindow.Size.Width, mainWindow.GameWindow.Size.Height);
             frontImage = new Bitmap(mainWindow.GameWindow.Size.Width, mainWindow.GameWindow.Size.Height);
+            worldImage = new Bitmap(mainWindow.GameWindow.Size.Width, mainWindow.GameWindow.Size.Height);
 
             nextTetrisPos[0] = mainWindow.NextTetris1.Location;
             nextTetrisPos[1] = mainWindow.NextTetris2.Location;
@@ -45,6 +54,12 @@ namespace _3D_Tetris.WinForm
 
             uIManager = new(mainWindow);
             mainCotrolUnit = new ThreeDimTetrisControlUnit(viewBoxMax);
+
+            gameLoopElapsedTimeCounter.TimerElapsed += GameLoopEvent;
+            renderLoopElapsedTimeCounter.TimerElapsed += RenderLoopEvent;
+            mainCotrolUnit.WorldUpdated += OnWorldUpdate;
+
+            PaintWorld();
         }
 
         public override void OnKeyDown(object sender, KeyEventArgs e)
@@ -61,22 +76,39 @@ namespace _3D_Tetris.WinForm
             mainCotrolUnit.OnKeyUp(TetrisGameInstructionTranslator.GetInstruction(e.KeyCode));
         }
 
-        public override void OnGameLoopEvent(int millisecondPassed)
+        public override void OnGameLoopEvent()
         {
-            mainCotrolUnit.OnGameLoopEvent(millisecondPassed);
+            gameLoopElapsedTimeCounter.UpdateTimer();
         }
 
-        public override void OnRenderLoopEvent(int millisecondPassed)
+        private void GameLoopEvent(object? sender, TimerElapsedEventArgs te)
         {
-            base.OnRenderLoopEvent(millisecondPassed);
+            mainCotrolUnit.OnGameLoopEvent();
+            totalPlayTimeCounter.AddPlayTime((int)te.TimeElapsed);
+        }
 
+        public override void OnRenderLoopEvent()
+        {
+            base.OnRenderLoopEvent();
+            renderLoopElapsedTimeCounter.UpdateTimer();
+        }
 
+        private void OnWorldUpdate(object? sender, EventArgs e)
+        {
+            PaintWorld();
+        }
+
+        private void RenderLoopEvent(object? sender, TimerElapsedEventArgs te)
+        {
             //clear background
             Graphics g = Graphics.FromImage(backImage);
             g.Clear(GameConfigData.BackgroundColor);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
             //paint world
-            worldViewPainter.PaintWorld(mainCotrolUnit.TetrisWorld, backImage, mainWindow.WorldOrigin.Location, mainCotrolUnit.CurViewAngle);
+            g.DrawImage(worldImage,Point.Empty);
+            //worldViewPainter.PaintWorld(mainCotrolUnit.TetrisWorld, g, mainWindow.WorldOrigin.Location, mainCotrolUnit.CurViewAngle);
 
             //paint next tetrises
             int i = 0;
@@ -84,14 +116,14 @@ namespace _3D_Tetris.WinForm
             {
                 if (i < 3)
                 {
-                    PaintSingleTetris(nextSingleTetrisPainter, backImage, nextTetrisPos[i], item.Item1, item.Item2, false);
+                    nextSingleTetrisPainter.PaintSingleTetris(g, nextTetrisPos[i], item.Item1, item.Item2, false);
                 }
                 i++;
             }
 
             //paint hold tetris
 
-            PaintSingleTetris(heldSingleTetrisPainter, backImage, mainWindow.HoldTetris.Location, mainCotrolUnit.HeldTetris.GridCollisionShape, mainCotrolUnit.HeldTetris.PaintColor, mainCotrolUnit.IsHeldTetris);
+            heldSingleTetrisPainter.PaintSingleTetris(g, mainWindow.HoldTetris.Location, mainCotrolUnit.HeldTetris.GridCollisionShape, mainCotrolUnit.HeldTetris.PaintColor, mainCotrolUnit.IsHeldTetris);
 
             //switch
             (backImage, frontImage) = (frontImage, backImage);
@@ -99,14 +131,21 @@ namespace _3D_Tetris.WinForm
 
             ShowUIData();
 
-            mainWindow.Log.Text = $"{mainCotrolUnit.TotalTetrisDropped / mainCotrolUnit.TotalPlayTime.TotalSeconds:F2}";
+            fpsCounter.InvokeEvent();
+            mainWindow.Log.Text = $"{mainCotrolUnit.TotalTetrisDropped / totalPlayTimeCounter.TotalPlayTime.TotalSeconds:F2}";
+            mainWindow.Log.Text += Environment.NewLine;
+            mainWindow.Log.Text += $"{fpsCounter.CurrentFps:F2}" + (testFlag ? "a" : string.Empty);
+            testFlag = !testFlag;
         }
 
-        private static void PaintSingleTetris(SingleTetrisPainter bigSingleTetrisPainter, Image backImage, Point anchor, GridCollisionShape shape, Color color, bool IsHeld)
+        private void PaintWorld()
         {
-            bigSingleTetrisPainter.PaintSingleTetris(backImage, anchor, shape, color, IsHeld);
+            Graphics g = Graphics.FromImage(worldImage);
+            g.Clear(Color.Transparent);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            worldViewPainter.PaintWorld(mainCotrolUnit.TetrisWorld, g, mainWindow.WorldOrigin.Location, mainCotrolUnit.CurViewAngle);
         }
-
 
         public override void Dispose()
         {
@@ -118,7 +157,7 @@ namespace _3D_Tetris.WinForm
             uIManager.ShowScore(mainCotrolUnit.CurrentScore);
             uIManager.ShowSliceCleared(mainCotrolUnit.CurrentClearedSlices);
             uIManager.ShowLevel(mainCotrolUnit.CurrentLevel);
-            uIManager.ShowPlayTime(mainCotrolUnit.TotalPlayTime);
+            uIManager.ShowPlayTime(totalPlayTimeCounter.TotalPlayTime);
             uIManager.ShowTetrisDropped(mainCotrolUnit.TotalTetrisDropped);
         }
     }

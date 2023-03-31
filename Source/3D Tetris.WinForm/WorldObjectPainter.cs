@@ -57,19 +57,18 @@ namespace _3D_Tetris.WinForm
             boxSprite.AdjustSurfaceBrightness(xBrightness, yBrightness, zBrightness);
         }
 
-        public void PaintWorld<T>(StaticGridDynamicWorld<T>? world, Image? canvas, System.Drawing.Point anchor, CameraViewAngle viewAngle, BoxShader boxShader) where T : TetrisBodyBase
+        public void PaintWorld<T>(StaticGridDynamicWorld<T>? world, Graphics g, System.Drawing.Point anchor, CameraViewAngle viewAngle, BoxShader boxShader) where T : TetrisBodyBase
         {
             if (world == null)
             {
                 throw new ArgumentNullException(nameof(world));
             }
 
-            if (canvas == null)
+            if (g == null)
             {
-                throw new ArgumentNullException(nameof(canvas));
+                throw new ArgumentNullException(nameof(g));
             }
 
-            Graphics g = Graphics.FromImage(canvas);
             foreach ((Drawing.Point, TetrisBodyBase) paintData in cameraViewPlane.GenerateCameraView(worldViewBox.WorldViewInterception(world), worldViewBox.Min, worldViewBox.Max, viewAngle, new Drawing.Point(boxSprite.ZSurfaceWidth / 2, boxSprite.ZSurfaceHeight / 2), new Drawing.Point(-boxSprite.ZSurfaceWidth / 2, boxSprite.ZSurfaceHeight / 2), new Drawing.Point(0, -boxSprite.BoxHeight)).Select(v => ((Drawing.Point, TetrisBodyBase))v))
             {
                 g.SmoothingMode = SmoothingMode.AntiAlias;

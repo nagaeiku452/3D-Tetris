@@ -9,8 +9,8 @@ namespace _3D_Tetris
 {
     public static class GameConfigData
     {
-        private static int gameLoopInterval = 15;// in millisecond
-        private static int renderInterval = 15;// in millisecond
+        private static double gameLoopInterval = 16.6666;// in millisecond
+        private static double renderInterval = 16.6666;// in millisecond
         private static int worldLengthX = 4;
         private static int worldLengthY = 4;
         private static int worldLengthZ = 15;
@@ -35,7 +35,7 @@ namespace _3D_Tetris
 
 
 
-        public static int GameLoopInterval
+        public static double GameLoopInterval
         {
             get => gameLoopInterval;
             private set
@@ -46,7 +46,7 @@ namespace _3D_Tetris
                 }
             }
         }
-        public static int RenderInterval
+        public static double RenderInterval
         {
             get => renderInterval; private set
             {
@@ -229,7 +229,7 @@ namespace _3D_Tetris
 
         public static int TetrisWorldGravityScalar { get; private set; } = 1000000;
 
-        public static int TetrisFallInterval { get; private set; } = 107;//in intervel count
+        public static int TetrisFallInterval { get; private set; } = 100;//in intervel count
         public static int TetrisSoftDropInterval { get; private set; } = 3;//in intervel count
 
         public static int InitialLevel
@@ -257,9 +257,9 @@ namespace _3D_Tetris
 
 
         public static byte CurrentTetrisShadowColorA { get; private set; } = 127;
-        public static byte CurrentTetrisShadowColorR { get; private set; } = 0;
-        public static byte CurrentTetrisShadowColorG { get; private set; } = 0;
-        public static byte CurrentTetrisShadowColorB { get; private set; } = 0;
+        public static byte CurrentTetrisShadowColorR { get; private set; }
+        public static byte CurrentTetrisShadowColorG { get; private set; }
+        public static byte CurrentTetrisShadowColorB { get; private set; }
 
 
 

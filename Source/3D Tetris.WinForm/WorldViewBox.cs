@@ -63,7 +63,18 @@ namespace _3D_Tetris.WinForm
                                 Vector3i paintDataPos = unitTetrisBody.WorldTransform + shapePositionPair.Item2 + new Vector3i(i, j, k) + min;
                                 if (paintDataPos.X >= Min.X && paintDataPos.Y >= Min.Y && paintDataPos.Z >= Min.Z && paintDataPos.X <= Max.X && paintDataPos.Y <= Max.Y && paintDataPos.Z <= Max.Z)
                                 {
-                                    paintData.TryAdd(paintDataPos, unitTetrisBody);
+                                    paintData.TryGetValue(paintDataPos, out TetrisBodyBase? t);
+                                    if (t != null)
+                                    {
+                                        if (t.IsShadow)
+                                        {
+                                            paintData[paintDataPos] = unitTetrisBody;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        paintData.Add(paintDataPos, unitTetrisBody);
+                                    }
                                 }
                             }
                         }
