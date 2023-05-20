@@ -23,6 +23,7 @@ namespace _3D_Tetris
         private static int heldTetrisUnitZSurfaceHeight = 23;
         private static int heldTetrisUnitZSurfaceWidth = 46;
         private static int heldTetrisUnitBoxHeight = 28;
+        private static int appearanceDelay = 10;
         private static float groundEdgeWidth = 15f;
         private static int initialLevel = 1;
         private static int clearedSlicesRequiredForLevelUp = 10;
@@ -264,6 +265,18 @@ namespace _3D_Tetris
 
 
         private static string ConfigPath { get; } = "./config";
+        public static int AppearanceDelay
+        {
+            get => appearanceDelay;
+
+            private set
+            {
+                if (value > 0)
+                {
+                    appearanceDelay = value;
+                }
+            }
+        }
 
         static GameConfigData()
         {

@@ -2,10 +2,8 @@
 
 namespace _3D_Tetris
 {
-    internal class ThreeDimTetrisFallIntervalCounter
+    internal class ThreeDimTetrisFallIntervalCounter : SimpleTimeCounter
     {
-        public EventHandler<EventArgs> FallIntervalCounterTimeUp;
-        private int countDownThreshold = CaculateInitInterval(1);
         private int countDownThresholdPreset = CaculateInitInterval(1);
 
         public void ResetFallInterval(int currentLevel)
@@ -13,13 +11,9 @@ namespace _3D_Tetris
             countDownThreshold = countDownThresholdPreset = CaculateInitInterval(currentLevel);
         }
 
-        public void Tick()
+        internal ThreeDimTetrisFallIntervalCounter()
         {
-            countDownThreshold--;
-            if (countDownThreshold == 0)
-            {
-                FallIntervalCounterTimeUp?.Invoke(this, EventArgs.Empty);
-            }
+            countDownThreshold = CaculateInitInterval(1);
         }
 
         private static int CaculateInitInterval(int currentLevel)

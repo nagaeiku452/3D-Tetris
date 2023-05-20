@@ -9,7 +9,7 @@ namespace _3D_Tetris
     {
         public readonly RotatableTetris Instance;
         private readonly MultiBoxShapeReplicator shapeReplicator = new();
-        public int TetrisNum { get; private set; } = -1;
+        public int TetrisNo { get; private set; } = -1;
 
         public TetrisMorphling()
         {
@@ -30,7 +30,7 @@ namespace _3D_Tetris
         {
             CloneMultiBoxShape(data.Item1);
             Instance.PaintColor = data.Item2;
-            TetrisNum = num;
+            TetrisNo = num;
         }
 
         private class MultiBoxShapeReplicator

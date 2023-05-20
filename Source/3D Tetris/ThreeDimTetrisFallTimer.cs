@@ -2,14 +2,16 @@
 
 namespace _3D_Tetris
 {
-    internal class ThreeDimTetrisFallTimer:IDisposable
+    internal class ThreeDimTetrisFallTimer : IDisposable
     {
         private readonly ThreeDimTetrisFallIntervalCounter intervalCounter = new();
-        private readonly ThreeDimTetrisSoftDropIntervalCounter softDropIntervalCounter = new();
+        private readonly SimpleTimeCounter softDropIntervalCounter = new();
 
         public EventHandler<FallEventArgs> TetrisFall;
         private bool softDropEnabled;
         private bool disposedValue;
+
+        private static int SoftDropInterval => GameConfigData.TetrisSoftDropInterval;
 
         public bool SoftDropEnabled
         {
@@ -18,7 +20,7 @@ namespace _3D_Tetris
             {
                 if (!softDropEnabled&& value)
                 {
-                    softDropIntervalCounter.Reset();
+                    softDropIntervalCounter.Reset(SoftDropInterval);
                 }
                 softDropEnabled = value;
             }
@@ -26,16 +28,16 @@ namespace _3D_Tetris
 
         public ThreeDimTetrisFallTimer()
         {
-            intervalCounter.FallIntervalCounterTimeUp += OnIntervalTimeUp;
-            softDropIntervalCounter.SoftDropIntervalCounterTimeUp += OnIntervalTimeUp;
-            softDropIntervalCounter.Reset();
+            intervalCounter.OnCountDownEnd += OnIntervalTimeUp;
+            softDropIntervalCounter.OnCountDownEnd += OnIntervalTimeUp;
+            softDropIntervalCounter.Reset(SoftDropInterval);
         }
 
         private void OnIntervalTimeUp(object sender, EventArgs e)
         {
             TetrisFall?.Invoke(this,new FallEventArgs(softDropEnabled));
             intervalCounter.Reset();
-            softDropIntervalCounter.Reset();
+            softDropIntervalCounter.Reset(SoftDropInterval);
         }
 
         public void Tick()
@@ -60,8 +62,8 @@ namespace _3D_Tetris
                 {
                     // TODO: 處置受控狀態 (受控物件)
 
-                    intervalCounter.FallIntervalCounterTimeUp -= OnIntervalTimeUp;
-                    softDropIntervalCounter.SoftDropIntervalCounterTimeUp -= OnIntervalTimeUp;
+                    intervalCounter.OnCountDownEnd -= OnIntervalTimeUp;
+                    softDropIntervalCounter.OnCountDownEnd -= OnIntervalTimeUp;
                 }
 
                 // TODO: 釋出非受控資源 (非受控物件) 並覆寫完成項

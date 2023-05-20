@@ -19,10 +19,13 @@ namespace _3D_Tetris.WinForm
         private readonly SingleTetrisPainter heldSingleTetrisPainter;
         private readonly Point[] nextTetrisPos = new Point[3];
 
+#if DEBUG
+        private readonly FpsCounter fpsCounter = new();
+#endif
+
         private readonly ThreeDimTetrisControlUnit mainCotrolUnit;
         private readonly TotalPlayTimeCounter totalPlayTimeCounter = new();
         private readonly ThreeDimTetrisUIManager uIManager;
-        private readonly FpsCounter fpsCounter = new();
         private readonly ElapsedTimeCounter gameLoopElapsedTimeCounter = new(GameConfigData.GameLoopInterval);
         private readonly ElapsedTimeCounter renderLoopElapsedTimeCounter = new(GameConfigData.RenderInterval);
 
@@ -131,10 +134,15 @@ namespace _3D_Tetris.WinForm
 
             ShowUIData();
 
+#if DEBUG
             fpsCounter.InvokeEvent();
             mainWindow.Log.Text = $"{mainCotrolUnit.TotalTetrisDropped / totalPlayTimeCounter.TotalPlayTime.TotalSeconds:F2}";
             mainWindow.Log.Text += Environment.NewLine;
             mainWindow.Log.Text += $"{fpsCounter.CurrentFps:F2}" + (testFlag ? "a" : string.Empty);
+
+            mainWindow.Log.Text += Environment.NewLine;
+            mainWindow.Log.Text += mainCotrolUnit.FrameCount;
+#endif
             testFlag = !testFlag;
         }
 

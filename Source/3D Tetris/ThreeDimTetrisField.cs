@@ -48,6 +48,16 @@ namespace _3D_Tetris
         public EventHandler<EventArgs> CurrentTetrisSingleFall;
         public EventHandler<EventArgs> CurrentTetrisFallToStack;
 
+        public bool IsCurrentTetrisAboutToFallToStack
+        {
+            get
+            {
+                shapeSweepResult.ResetResult(currentTetris, 1);
+                TetrisWorld.ShapeSweepTest(currentTetris.GridCollisionShape, currentTetris.WorldTransform, StaticGridDirection.NegativeUnitZ, 1, shapeSweepResult);
+                return shapeSweepResult.MaximumPossibleTransform == 0;
+            }
+        }
+
         public void InitNewTetrisField(Vector3i viewBoxMin, Vector3i viewBoxMax)
         {
             TetrisWorld = new StaticGridDynamicWorld<TetrisBodyBase>(new StaticGridCollisionDispatcher(new DefaultStaticGridCollisionAlgorithmConfiguration()), new BlockingPhysicsConfiguration<TetrisBodyBase>())
@@ -69,7 +79,12 @@ namespace _3D_Tetris
             ModifyTetrisShadow(currentTetris, TetrisWorld);
         }
 
-        public void RotateCurrentTetris(StaticGridDirection rotateDir)
+        /// <summary>
+        /// rotate current tetris
+        /// </summary>
+        /// <param name="rotateDir">rotate dir</param>
+        /// <returns>true if rotation success.</returns>
+        public bool RotateCurrentTetris(StaticGridDirection rotateDir)
         {
             wallKickResult.ResetResult();
             wallKickConfiguration.WallKickTest(currentTetris, TetrisWorld, rotateDir, wallKickResult);
@@ -86,6 +101,7 @@ namespace _3D_Tetris
                 }
                 ModifyTetrisShadow(currentTetris, TetrisWorld);
             }
+            return wallKickResult.CanRotate;
         }
 
         public void MoveCurrentTetris(StaticGridDirection moveDirection)
@@ -95,19 +111,24 @@ namespace _3D_Tetris
                 MoveCurrentTetris(moveDirection.ToTransform());
             }
         }
-        public void MoveCurrentTetris(Vector3i teleportationDisplacement)
+        public bool MoveCurrentTetris(Vector3i teleportationDisplacement)
         {
             RemoveTetrisShadow(TetrisWorld);
 
+            Vector3i previousTransform = currentTetris.WorldTransform;
             TetrisWorld.SingleTransformationSimulation(currentTetris, teleportationDisplacement, StaticGridDirection.NoDirection);
 
             ModifyTetrisShadow(currentTetris, TetrisWorld);
+
+            return previousTransform == currentTetris.WorldTransform;
         }
 
         public bool FallCurrentTetris()
         {
             Vector3i curTetrisPos = currentTetris.WorldTransform;
             TetrisWorld.SingleTransformationSimulation(currentTetris, -Vector3i.UnitZ, StaticGridDirection.NoDirection);
+
+            CurrentTetrisSingleFall?.Invoke(this, EventArgs.Empty);
 
             bool b = curTetrisPos == currentTetris.WorldTransform;
             if (b)

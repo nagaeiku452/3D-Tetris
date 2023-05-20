@@ -9,7 +9,6 @@ namespace _3D_Tetris
 {
     public class ThreeDimTetrisControlUnit : IDisposable
     {
-
         private readonly TetrisMorphling currentTetris = new();
         private readonly TotalTetrisDropCounter dropCounter = new();
         private readonly TetrisMorphling heldTetris = new();
@@ -18,6 +17,11 @@ namespace _3D_Tetris
         private readonly ThreeDimTetrisSliceClearedCounter sliceCounter = new();
         private readonly ThreeDimTetrisLevelCounter levelCounter = new();
         private readonly ThreeDimTetrisFallTimer fallTimer = new();
+        private readonly SimpleTimeCounter AppearanceDelayTimer = new();
+
+#if DEBUG
+        public int FrameCount { get; set; }
+#endif
         private readonly NextTetrisQueue generator = new()
         {
             QueueSize = 3,
@@ -39,6 +43,7 @@ namespace _3D_Tetris
 
         public CameraViewAngle CurViewAngle { get; private set; } = CameraViewAngle.firstQuadrant;
         public bool IsHeldTetris { get; private set; }
+
         private TetrisGameInstruction pendingInstruction = TetrisGameInstruction.None;
         //int tetrisCount = 0;
 
@@ -57,6 +62,7 @@ namespace _3D_Tetris
 
             fallTimer.ResetFallInterval(levelCounter.CurrentLevel);
             fallTimer.TetrisFall += OnCurrentTetrisFallIntervalTimeUp;
+            AppearanceDelayTimer.OnCountDownEnd += OnAppearanceDelayOver;
 
             GeneratrNewTetris(currentTetris, TetrisField, CurViewAngle, generator, false);
         }
@@ -67,6 +73,7 @@ namespace _3D_Tetris
             TetrisField.CurrentTetrisHardDropped -= OnCurrentTetrisHardDropped;
             TetrisField.CurrentTetrisFallToStack -= OnCurrentTetrisFallToStack;
             fallTimer.TetrisFall -= OnCurrentTetrisFallIntervalTimeUp;
+            AppearanceDelayTimer.OnCountDownEnd -= OnAppearanceDelayOver;
             GC.SuppressFinalize(this);
         }
 
@@ -85,34 +92,64 @@ namespace _3D_Tetris
                 case TetrisGameInstruction.None:
                     return;
                 case TetrisGameInstruction.MoveUpLeft:
-                    TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, CurViewAngle) * -Vector3i.UnitX);
+                    if (TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, CurViewAngle) * -Vector3i.UnitX))
+                    {
+                        FallResetValidation(TetrisField, fallTimer);
+                    }
                     break;
                 case TetrisGameInstruction.MoveUpRight:
-                    TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, CurViewAngle) * -Vector3i.UnitY);
+                    if (TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, CurViewAngle) * -Vector3i.UnitY))
+                    {
+                        FallResetValidation(TetrisField, fallTimer);
+                    }
                     break;
                 case TetrisGameInstruction.MoveDownLeft:
-                    TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, CurViewAngle) * Vector3i.UnitY);
+                    if (TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, CurViewAngle) * Vector3i.UnitY))
+                    {
+                        FallResetValidation(TetrisField, fallTimer);
+                    }
                     break;
                 case TetrisGameInstruction.MoveDownRight:
-                    TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, CurViewAngle) * Vector3i.UnitX);
+                    if (TetrisField.MoveCurrentTetris(GetRotationByViewAngle(CameraViewAngle.firstQuadrant, CurViewAngle) * Vector3i.UnitX))
+                    {
+                        FallResetValidation(TetrisField, fallTimer);
+                    }
                     break;
                 case TetrisGameInstruction.PosXRotation:
-                    TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.PositiveUnitX, CurViewAngle));
+                    if (TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.PositiveUnitX, CurViewAngle)))
+                    {
+                        FallResetValidation(TetrisField, fallTimer);
+                    }
                     break;
                 case TetrisGameInstruction.PosYRotation:
-                    TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.PositiveUnitY, CurViewAngle));
+                    if (TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.PositiveUnitY, CurViewAngle)))
+                    {
+                        FallResetValidation(TetrisField, fallTimer);
+                    }
                     break;
                 case TetrisGameInstruction.PosZRotation:
-                    TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.PositiveUnitZ, CurViewAngle));
+                    if (TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.PositiveUnitZ, CurViewAngle)))
+                    {
+                        FallResetValidation(TetrisField, fallTimer);
+                    }
                     break;
                 case TetrisGameInstruction.NegXRotation:
-                    TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.NegativeUnitX, CurViewAngle));
+                    if (TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.NegativeUnitX, CurViewAngle)))
+                    {
+                        FallResetValidation(TetrisField, fallTimer);
+                    }
                     break;
                 case TetrisGameInstruction.NegYRotation:
-                    TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.NegativeUnitY, CurViewAngle));
+                    if (TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.NegativeUnitY, CurViewAngle)))
+                    {
+                        FallResetValidation(TetrisField, fallTimer);
+                    }
                     break;
                 case TetrisGameInstruction.NegZRotation:
-                    TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.NegativeUnitZ, CurViewAngle));
+                    if (TetrisField.RotateCurrentTetris(AdjustRotationByCameraViewAngle(StaticGridDirection.NegativeUnitZ, CurViewAngle)))
+                    {
+                        FallResetValidation(TetrisField, fallTimer);
+                    }
                     break;
                 case TetrisGameInstruction.ClockWiseCameraRotate:
                     CurViewAngle = CurViewAngle.ClockWisedShift();
@@ -143,10 +180,9 @@ namespace _3D_Tetris
 
         private void HoldTetris()
         {
-            int currentTetrisNum = currentTetris.TetrisNum;
-            int heldTetrisNum = heldTetris.TetrisNum;
+            int currentTetrisNum = currentTetris.TetrisNo;
+            int heldTetrisNum = heldTetris.TetrisNo;
             heldTetris.CloneTetrisData(generator.GetTetrisData(currentTetrisNum), currentTetrisNum);
-
 
             if (heldTetrisNum == -1)
             {
@@ -245,6 +281,10 @@ namespace _3D_Tetris
             ExecuteGameInstruction(pendingInstruction);
             pendingInstruction = TetrisGameInstruction.None;
             fallTimer.Tick();
+            AppearanceDelayTimer.Tick();
+#if DEBUG
+            FrameCount += 1;
+#endif
         }
 
         //private void PaintWorld(StaticGridDynamicWorld<TetrisBodyBase> world, Image canvas, CameraViewAngle curViewAngle)
@@ -257,6 +297,14 @@ namespace _3D_Tetris
         //    painter.PaintWorld(world, canvas, anchor, singleTetrisShader, curViewAngle);
         //    world.RemoveCollisionObject(paintTetris);
         //}
+
+        private void FallResetValidation(ThreeDimTetrisField tetrisField, ThreeDimTetrisFallTimer falltimer)
+        {
+            if (tetrisField.IsCurrentTetrisAboutToFallToStack)
+            {
+                falltimer.ResetFallInterval(levelCounter.CurrentLevel);
+            }
+        }
 
         private void OnSliceCleared(object sender, SliceClearedEventArgs e)
         {
@@ -273,10 +321,14 @@ namespace _3D_Tetris
         }
         private void OnCurrentTetrisFallToStack(object sender, EventArgs _)
         {
+            dropCounter.Dropped();
+            AppearanceDelayTimer.Reset(GameConfigData.AppearanceDelay);
+        }
+
+        private void OnAppearanceDelayOver(object sender, EventArgs _)
+        {
             fallTimer.ResetFallInterval(levelCounter.CurrentLevel);
             GeneratrNewTetris(currentTetris, TetrisField, CurViewAngle, generator, false);
-
-            dropCounter.Dropped();
         }
 
         private void GeneratrNewTetris(TetrisMorphling currentTetris, ThreeDimTetrisField tetrisField, CameraViewAngle curViewAngle, NextTetrisQueue generator, bool isHoldTetris)
@@ -298,6 +350,7 @@ namespace _3D_Tetris
             currentTetris.Instance.AffectByGravity = false;
             currentTetris.Instance.ForceSetActivationState(GridBodyActivationState.DisableDeactivation);
             tetrisField.AddNewCurrentTetris(currentTetris.Instance);
+            WorldUpdated?.Invoke(this, EventArgs.Empty);
             IsHeldTetris = isHoldTetris;
         }
 
