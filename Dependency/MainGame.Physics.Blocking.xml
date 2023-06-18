@@ -71,6 +71,7 @@
             <param name="pushingBody"></param>
             <param name="pushDirection"></param>
             <param name="oldBodies"></param>
+            <param name="newBodies"></param>
         </member>
         <member name="M:MainGame.Physics.Blocking.BlockingGraph`1.ResetGraph(MainGame.Physics.StaticGridSystem.StaticGridDynamicWorld{`0},MainGame.Physics.StaticGridSystem.StaticGridDirection)">
             <summary>
@@ -137,6 +138,7 @@
             <param name="body"></param>
             <param name="blockingGraph"></param>
             <param name="gravityLinkedBodiesPendingMovementBuffer"></param>
+            <param name="blockingBodiesPendingMovementBuffer"></param>
             <param name="movement"></param>
             <returns>true if not blocked, false otherwise.</returns>
         </member>

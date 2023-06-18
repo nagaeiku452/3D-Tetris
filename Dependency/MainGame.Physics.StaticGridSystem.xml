@@ -34,7 +34,7 @@
             <param name="item">item to be added.</param>
             <remarks>nothing happened if <paramref name="item"/> is null.</remarks>
         </member>
-        <member name="M:MainGame.Physics.StaticGridSystem.GridBoxCollection`1.GetItem(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+        <member name="M:MainGame.Physics.StaticGridSystem.GridBoxCollection`1.GetItem(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Collections.Generic.ICollection{`0})">
             <summary>
             Get objects which collide the specific area.
             </summary>
@@ -44,6 +44,7 @@
             <param name="yMax"></param>
             <param name="zMin"></param>
             <param name="zMax"></param>
+            <param name="buffer"></param>
             <returns>An Enumerator of T's which collide this area. </returns>
         </member>
         <member name="T:MainGame.Physics.StaticGridSystem.ICollisionFilterHandler`1">
@@ -112,6 +113,7 @@
             Custom PhysicsCallback
             </summary>
             <param name="world">The world where bodies lie in.</param>
+            <param name="bodiesTransformSet"></param>
             <param name="bodies">The bodies which start the movement.</param>
             <param name="transform">The body's movement.</param>
             <param name="direction">If collision occurs, the push direction.</param>
@@ -145,6 +147,7 @@
             
             </summary>
             <param name="shape">shape to be swept.</param>
+            <param name="worldTransform"></param>
             <param name="sweepDirection">sweep direction</param>
             <param name="sweepLength"></param>
             <param name="result">test result to be saved</param>
