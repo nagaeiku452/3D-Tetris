@@ -1,2 +1,23 @@
-This is a side project made by winform
-you can build it yourself
+這是一個小作品 使用自製格子點遊戲引擎開發的小遊戲
+只要是windows系統 你可以自己使用IDE進行build
+這遊戲沒有遊戲結束 如果要重玩請關掉再開啟
+
+操作
+
+QE旋轉視角
+
+AZ 繞X軸轉(從畫面朝右下的軸)
+SX 繞Y軸轉(從畫面朝左下的軸)
+CD 繞Z軸轉(從畫面朝正上的軸)
+
+上下左右 移動
+
+數字鍵0 緩降下
+空白 急降下
+
+shift 暫時拿著
+
+
+config裏面有關於遊戲內容的各種設定調整
+可以自己調
+註:記得備份!
