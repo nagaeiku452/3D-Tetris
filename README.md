@@ -2,6 +2,8 @@
 只要是windows系統 你可以自己使用IDE進行build
 這遊戲沒有遊戲結束 如果要重玩請關掉再開啟
 
+youtube link:https://youtu.be/rDNiUyrNLas
+
 操作
 
 QE旋轉視角
@@ -21,3 +23,23 @@ shift 暫時拿著
 config裏面有關於遊戲內容的各種設定調整
 可以自己調
 註:記得備份!
+
+This is a side project,using self-created grid game engine.
+You can build your own version using IDE,unless you're OS is not Windows.
+There is neither kill screen nor game over scene
+
+Controls 
+
+QE:rotate vision angle
+AZ:rotate tetris block via X-axis
+SX:rotate tetris block via Y-axis
+CD:rotate tetris block via Z-axis
+
+Up Down Left Right:Move tetris block
+
+Num 0:Soft Drop
+Space:Hard Drop
+
+Shift:Hold
+
+the file "config" in Source/3d Tetris.WinForm contains config data that changes default setting in game
