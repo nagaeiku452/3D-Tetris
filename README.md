@@ -3,9 +3,9 @@
 
 ### OutLine
 
-This is a side project,using self-created grid game engine.
+This is a side project, using self-created grid game engine.
 
-You can build your own version using IDE,unless you're OS is not Windows.
+You can build your own version using IDE, unless you're OS is not Windows.
 
 There is neither kill screen nor game over scene
 
